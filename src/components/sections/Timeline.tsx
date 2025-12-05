@@ -122,13 +122,19 @@ function TimelineCard({ item, index }: { item: TimelineItem; index: number }) {
 
                 {/* Achievements */}
                 {item.achievements && item.achievements.length > 0 && (
-                  <div>
+                  <div className={cn("", isLeft && "md:flex md:flex-col md:items-end md:text-right")}>
                     <h4 className="text-sm font-semibold text-foreground mb-2">Conquistas</h4>
-                    <ul className={cn("space-y-1", isLeft && "md:text-right")}>
+                    <ul className="space-y-1">
                       {item.achievements.map((achievement, i) => (
-                        <li key={i} className="text-sm text-muted-foreground flex items-center gap-2">
+                        <li
+                          key={i}
+                          className={cn(
+                            "text-sm text-muted-foreground flex items-center gap-2",
+                            isLeft && "md:justify-end"
+                          )}
+                        >
                           <span className="w-1.5 h-1.5 rounded-full bg-success shrink-0" />
-                          {achievement}
+                          <span className={cn(isLeft && "md:text-right")}>{achievement}</span>
                         </li>
                       ))}
                     </ul>
@@ -155,18 +161,30 @@ export function Timeline() {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
+          <p className="text-sm uppercase tracking-[0.3em] text-muted-foreground mb-3">
+            Experiências Profissionais
+          </p>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
-            Minha <span className="gradient-text">Trajetória</span>
+            Minha <span className="gradient-text">jornada prática</span>
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Uma jornada de aprendizado contínuo, desafios superados e conquistas que moldaram quem sou hoje.
+            Projetos e funções que consolidaram minhas habilidades técnicas e de liderança em tecnologia.
           </p>
         </motion.div>
 
         {/* Timeline */}
         <div className="relative">
           {/* Vertical Line */}
-          <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary via-secondary to-accent hidden md:block" />
+          <div className="absolute left-4 md:left-1/2 top-0 bottom-0 hidden md:block pointer-events-none">
+            <div className="relative h-full flex items-stretch justify-center">
+              {/* Outer glow */}
+              <div className="absolute inset-y-0 -ml-5 w-10 bg-gradient-to-b from-primary/10 via-secondary/5 to-accent/10 blur-3xl opacity-70" />
+              {/* Main line */}
+              <div className="w-[3px] rounded-full bg-gradient-to-b from-primary via-secondary to-accent shadow-[0_0_25px_rgba(139,92,246,0.35)]" />
+              {/* Inner shine */}
+              <div className="absolute inset-y-0 w-[1px] bg-white/40 opacity-70 animate-pulse" />
+            </div>
+          </div>
 
           {/* Timeline Items */}
           <div className="space-y-8 md:space-y-12">

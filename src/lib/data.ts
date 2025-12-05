@@ -7,7 +7,7 @@ export const siteConfig = {
   title: "Desenvolvedor Full Stack",
   headline: "Transformando Ideias em Soluções Reais.",
   subheadline: "Desenvolvedor Full Stack com experiência em Python, Java e Inteligência Artificial. Criando soluções modernas, escaláveis e inovadoras.",
-  availability: "Disponível para Projetos",
+  availability: "Disponível para Projetos e Oportunidades",
   email: "leandrorocha899@icloud.com",
   phone: "+55 (11) 96615-5330",
   location: "São Paulo, SP",
@@ -17,7 +17,7 @@ export const siteConfig = {
 };
 
 export const socialLinks = {
-  github: "#", // Link será adicionado futuramente
+  github: "https://github.com/LeandroRochaDosPrazeres",
   linkedin: "https://www.linkedin.com/in/leandro-rocha-dos-prazeres-387877306",
 };
 
@@ -62,42 +62,6 @@ export const timelineData: TimelineItem[] = [
     type: "work",
     technologies: ["Excel", "Banco de Dados", "Análise de Dados", "Relatórios"],
     achievements: ["Gerenciamento completo do banco de dados", "Elaboração de relatórios técnicos"],
-  },
-  {
-    id: "3",
-    year: "2022 - 2027",
-    title: "Engenharia da Computação",
-    subtitle: "Universidade São Judas",
-    description: "Graduação em Engenharia da Computação com foco em programação, desenvolvimento de software e inteligência artificial.",
-    type: "education",
-    technologies: ["Python", "Algoritmos", "Estruturas de Dados", "IA"],
-  },
-  {
-    id: "4",
-    year: "2025",
-    title: "AWS Developer Associate",
-    subtitle: "Amazon Web Services - Em Estudo",
-    description: "Preparação para a certificação AWS Certified Developer Associate.",
-    type: "certification",
-    technologies: ["AWS", "Cloud"],
-  },
-  {
-    id: "5",
-    year: "2022",
-    title: "Curso de Python Básico",
-    subtitle: "IMT - Instituto Mauá de Tecnologia",
-    description: "Curso extracurricular de fundamentos de programação em Python.",
-    type: "certification",
-    technologies: ["Python", "Lógica de Programação"],
-  },
-  {
-    id: "6",
-    year: "2019",
-    title: "Manutenção de Computadores e Notebooks",
-    subtitle: "ETEC - Prof. Camargo Aranha",
-    description: "Curso técnico de manutenção de hardware, diagnóstico e reparo de computadores e notebooks.",
-    type: "certification",
-    technologies: ["Hardware", "Diagnóstico", "Manutenção"],
   },
 ];
 
@@ -225,4 +189,128 @@ export const languages = [
   { name: "Português", level: "Nativo" },
   { name: "Inglês", level: "Intermediário" },
   { name: "Espanhol", level: "Básico" },
+];
+
+export interface EducationItem {
+  id: string;
+  institution: string;
+  course: string;
+  period: string;
+  description: string;
+  focus: string[];
+}
+
+export const educationItems: EducationItem[] = [
+  {
+    id: "edu-1",
+    institution: "Universidade São Judas",
+    course: "Engenharia da Computação",
+    period: "2022 — 2027/1",
+    description:
+      "Formação abrangendo arquitetura de computadores, circuitos digitais, sistemas embarcados, redes de computadores e inteligência artificial aplicada ao desenvolvimento.",
+    focus: ["Sistemas Embarcados", "Circuitos Digitais", "Redes & Segurança", "IA Aplicada", "Desenvolvedor"],
+  },
+];
+
+export interface NextStepItem {
+  id: string;
+  title: string;
+  description: string;
+  status: "pesquisando" | "em andamento" | "planejado";
+  focus: string[];
+}
+
+export const nextSteps: NextStepItem[] = [
+  {
+    id: "ns-aws-1",
+    title: "AWS Developer Associate",
+    description:
+      "Certificação em andamento para aprofundar boas práticas de desenvolvimento serverless, integrações com APIs e observabilidade na AWS.",
+    status: "em andamento",
+    focus: ["Lambda", "API Gateway", "SQS/SNS", "CloudWatch"],
+  },
+  {
+    id: "ns-gcp-2",
+    title: "Google ACE Engineer",
+    description:
+      "Objetivo de dominar a implementação técnica, gerenciamento de IAM e operações diárias em ambientes cloud através de CLI e Console.",
+    status: "planejado",
+    focus: ["Deploy", "IAM", "Observabilidade", "Automação"],
+  },
+  {
+    id: "ns-gcp-1",
+    title: "Digital Leader (Google Cloud)",
+    description:
+      "Foco em compreender a infraestrutura global do Google e os principais serviços de IaaS e PaaS para enxergar valor de negócio na nuvem.",
+    status: "planejado",
+    focus: ["Google Cloud", "Fundamentos", "Estratégia", "Infraestrutura"],
+  },
+  {
+    id: "ns-sec-1",
+    title: "Cybersecurity Fundamentals",
+    description:
+      "Consolidar os pilares de confidencialidade, integridade e disponibilidade, além de criptografia, identidade e segurança de rede.",
+    status: "pesquisando",
+    focus: ["Segurança", "Criptografia", "Identidade", "Blue Team"],
+  },
+  {
+    id: "ns-sec-2",
+    title: "CompTIA CySA+",
+    description:
+      "Desenvolver habilidades analíticas para detecção de vulnerabilidades, uso de ferramentas de monitoramento e resposta a incidentes.",
+    status: "pesquisando",
+    focus: ["Threat Hunting", "SIEM", "Resposta a Incidentes", "Detecção"],
+  },
+  {
+    id: "ns-sec-3",
+    title: "eJPT / CEH",
+    description:
+      "Aprofundar práticas ofensivas para compreender como ataques acontecem e assim reforçar defesas.",
+    status: "pesquisando",
+    focus: ["Red Team", "Pentest", "Recon", "Exploração"],
+  },
+];
+
+export interface CertificationItem {
+  id: string;
+  title: string;
+  institution: string;
+  year: string;
+  description: string;
+  skills: string[];
+}
+
+export const certifications: CertificationItem[] = [
+  {
+    id: "cert-3",
+    title: "Notion Certified: Admin",
+    institution: "Notion",
+    year: "2025",
+    description: "Certificação focada em governança, automações e organização de workspaces colaborativos no Notion.",
+    skills: ["Notion", "Automação", "Workspace Management"],
+  },
+  {
+    id: "cert-4",
+    title: "Working with Boards",
+    institution: "Monday.com",
+    year: "2025",
+    description: "Capacitação em criação de boards estratégicos, automações e fluxos colaborativos dentro do Monday.com.",
+    skills: ["Monday.com", "Automação", "Gestão Visual"],
+  },
+  {
+    id: "cert-1",
+    title: "Curso de Python Básico",
+    institution: "IMT - Instituto Mauá de Tecnologia",
+    year: "2022",
+    description: "Fundamentos de programação, lógica e automação com Python.",
+    skills: ["Python", "Lógica de Programação", "Automação"],
+  },
+  {
+    id: "cert-2",
+    title: "Manutenção de Computadores e Notebooks",
+    institution: "ETEC Prof. Camargo Aranha",
+    year: "2019",
+    description: "Diagnóstico e reparo de hardware, montagem e manutenção preventiva.",
+    skills: ["Hardware", "Diagnóstico", "Suporte"],
+  },
 ];

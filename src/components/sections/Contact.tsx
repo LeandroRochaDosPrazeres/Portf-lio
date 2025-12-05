@@ -161,21 +161,18 @@ export function Contact() {
             <div className="glass rounded-2xl p-6">
               <h3 className="text-xl font-bold text-foreground mb-6">Redes Sociais</h3>
               <div className="grid grid-cols-2 gap-4">
-                {/* GitHub - Em breve */}
-                <div className="relative group">
-                  <motion.div
-                    className="flex items-center gap-3 p-4 bg-card/50 rounded-xl border border-transparent cursor-not-allowed opacity-60"
-                  >
-                    <Github className="w-5 h-5 text-foreground" />
-                    <span className="font-medium">Github</span>
-                  </motion.div>
-                  {/* Tooltip */}
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1 bg-card border border-border rounded-lg text-sm text-foreground opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                    Em breve
-                  </div>
-                </div>
+                <motion.a
+                  href={socialLinks.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="flex items-center gap-3 p-4 bg-card/50 rounded-xl hover:bg-card hover:border-primary border border-transparent transition-all"
+                >
+                  <Github className="w-5 h-5 text-foreground" />
+                  <span className="font-medium">GitHub</span>
+                </motion.a>
 
-                {/* LinkedIn */}
                 <motion.a
                   href={socialLinks.linkedin}
                   target="_blank"
@@ -185,7 +182,7 @@ export function Contact() {
                   className="flex items-center gap-3 p-4 bg-card/50 rounded-xl hover:bg-card hover:border-primary border border-transparent transition-all"
                 >
                   <Linkedin className="w-5 h-5 text-foreground" />
-                  <span className="font-medium">Linkedin</span>
+                  <span className="font-medium">LinkedIn</span>
                 </motion.a>
               </div>
             </div>

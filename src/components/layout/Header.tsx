@@ -9,7 +9,10 @@ import Link from "next/link";
 
 const navItems = [
   { label: "Início", href: "#hero" },
+  { label: "Formação", href: "#education" },
   { label: "Trajetória", href: "#timeline" },
+  { label: "Próximos Passos", href: "#next-steps" },
+  { label: "Certificações", href: "#certifications" },
   { label: "Projetos", href: "#projects" },
   { label: "Stack", href: "#stack" },
   { label: "Contato", href: "#contact" },
