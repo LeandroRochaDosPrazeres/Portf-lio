@@ -1,0 +1,23 @@
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { Hero } from "@/components/sections/Hero";
+import { Timeline } from "@/components/sections/Timeline";
+import { Projects } from "@/components/sections/Projects";
+import { TechStack } from "@/components/sections/TechStack";
+import { Contact } from "@/components/sections/Contact";
+
+export default function Home() {
+  return (
+    <>
+      <Header />
+      <main className="relative">
+        <Hero />
+        <Timeline />
+        <Projects />
+        <TechStack />
+        <Contact />
+      </main>
+      <Footer />
+    </>
+  );
+}
