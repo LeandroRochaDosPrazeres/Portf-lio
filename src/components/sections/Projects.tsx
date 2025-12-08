@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ExternalLink, Github, Play } from "lucide-react";
+import { ExternalLink, Github, Play, Construction } from "lucide-react";
 import { projectsData, Project } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
@@ -186,8 +186,38 @@ export function Projects() {
           </p>
         </motion.div>
 
-        {/* Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-[250px]">
+        {/* Em Desenvolvimento Banner */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="relative overflow-hidden rounded-2xl border border-amber-500/30 bg-gradient-to-r from-amber-500/10 via-amber-400/5 to-amber-500/10 p-8 mb-12"
+        >
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAgTSAwIDIwIEwgNDAgMjAgTSAyMCAwIEwgMjAgNDAgTSAwIDMwIEwgNDAgMzAgTSAzMCAwIEwgMzAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2Y1OWUwYjEwIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30" />
+          
+          <div className="relative flex flex-col md:flex-row items-center justify-center gap-4 text-center md:text-left">
+            <div className="flex items-center justify-center w-16 h-16 rounded-full bg-amber-500/20 border border-amber-500/30">
+              <Construction className="w-8 h-8 text-amber-500 animate-pulse" />
+            </div>
+            
+            <div className="space-y-2">
+              <h3 className="text-xl md:text-2xl font-bold text-amber-500">
+                🚧 Seção em Desenvolvimento
+              </h3>
+              <p className="text-muted-foreground max-w-lg">
+                Estou trabalhando para trazer projetos incríveis em breve! 
+                Enquanto isso, fique à vontade para explorar as outras seções do meu portfólio.
+              </p>
+            </div>
+          </div>
+          
+          {/* Animated border effect */}
+          <div className="absolute inset-0 rounded-2xl border border-amber-500/20 animate-pulse" />
+        </motion.div>
+
+        {/* Bento Grid - Hidden while in development */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-[250px] opacity-30 pointer-events-none blur-sm">
           {projectsData.map((project, index) => (
             <ProjectCard key={project.id} project={project} index={index} />
           ))}
