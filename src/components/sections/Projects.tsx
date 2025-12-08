@@ -216,12 +216,6 @@ export function Projects() {
           <div className="absolute inset-0 rounded-2xl border border-amber-500/20 animate-pulse" />
         </motion.div>
 
-        {/* Bento Grid - Hidden while in development */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-[250px] opacity-30 pointer-events-none blur-sm">
-          {projectsData.map((project, index) => (
-            <ProjectCard key={project.id} project={project} index={index} />
-          ))}
-        </div>
       </div>
     </section>
   );
