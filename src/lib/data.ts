@@ -282,6 +282,14 @@ export interface CertificationItem {
 
 export const certifications: CertificationItem[] = [
   {
+    id: "cert-5",
+    title: "Salesforce: Agentforce Specialist",
+    institution: "Salesforce",
+    year: "2025",
+    description: "Especialização em construção de Agentes de IA autônomos, orquestração de fluxos e integração de LLMs com dados de CRM para automação inteligente.",
+    skills: ["Orquestração de IA", "Reasoning Engine", "Gestão de Ações"],
+  },
+  {
     id: "cert-3",
     title: "Notion Certified: Admin",
     institution: "Notion",
