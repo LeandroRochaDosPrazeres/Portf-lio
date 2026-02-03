@@ -216,14 +216,6 @@ export interface NextStepItem {
 
 export const nextSteps: NextStepItem[] = [
   {
-    id: "ns-aws-1",
-    title: "AWS Developer Associate",
-    description:
-      "Certificação em andamento para aprofundar boas práticas de desenvolvimento serverless, integrações com APIs e observabilidade na AWS.",
-    status: "em andamento",
-    focus: ["Lambda", "API Gateway", "SQS/SNS", "CloudWatch"],
-  },
-  {
     id: "ns-gcp-2",
     title: "Google ACE Engineer",
     description:
@@ -275,6 +267,14 @@ export interface CertificationItem {
 }
 
 export const certifications: CertificationItem[] = [
+  {
+    id: "cert-aws",
+    title: "AWS Developer Associate",
+    institution: "Amazon Web Services",
+    year: "2025",
+    description: "Certificação que valida boas práticas de desenvolvimento serverless, integrações com APIs e observabilidade na AWS.",
+    skills: ["Lambda", "API Gateway", "SQS/SNS", "CloudWatch"],
+  },
   {
     id: "cert-5",
     title: "Salesforce: Agentforce Specialist",
