@@ -60,7 +60,14 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
 
         {/* Conteúdo */}
         <div className="p-6 pt-12">
-          <h3 className="text-2xl font-bold text-foreground mb-2">{project.title}</h3>
+          <div className="flex items-center gap-3 mb-2">
+            <h3 className="text-2xl font-bold text-foreground">{project.title}</h3>
+            {project.inDevelopment && (
+              <span className="px-3 py-1 text-xs font-semibold rounded-full bg-amber-500/20 text-amber-500 border border-amber-500/30">
+                🚧 Em Desenvolvimento
+              </span>
+            )}
+          </div>
           
           <p className="text-muted-foreground leading-relaxed mb-6">
             {project.longDescription || project.description}
@@ -176,12 +183,19 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
               <Icon className="w-7 h-7 text-white" />
             </motion.div>
 
-            {/* Featured Badge */}
-            {project.featured && (
-              <span className="px-3 py-1 text-xs font-semibold rounded-full bg-primary/20 text-primary border border-primary/30">
-                ⭐ Destaque
-              </span>
-            )}
+            {/* Badges */}
+            <div className="flex flex-col gap-2 items-end">
+              {project.inDevelopment && (
+                <span className="px-3 py-1 text-xs font-semibold rounded-full bg-amber-500/20 text-amber-500 border border-amber-500/30">
+                  🚧 Em Desenvolvimento
+                </span>
+              )}
+              {project.featured && (
+                <span className="px-3 py-1 text-xs font-semibold rounded-full bg-primary/20 text-primary border border-primary/30">
+                  ⭐ Destaque
+                </span>
+              )}
+            </div>
           </div>
 
           {/* Title & Description */}

@@ -77,6 +77,7 @@ export interface Project {
   githubUrl?: string;
   featured: boolean;
   size: "small" | "medium" | "large";
+  inDevelopment?: boolean;
 }
 
 export const projectsData: Project[] = [
@@ -90,7 +91,8 @@ export const projectsData: Project[] = [
     demoUrl: "https://iron-track-teal.vercel.app",
     githubUrl: "https://github.com/LeandroRochaDosPrazeres/IronTrack",
     featured: true,
-    size: "large",
+    size: "medium",
+    inDevelopment: true,
   },
   {
     id: "2",
@@ -102,6 +104,7 @@ export const projectsData: Project[] = [
     githubUrl: "https://github.com/LeandroRochaDosPrazeres/BotLink",
     featured: true,
     size: "medium",
+    inDevelopment: true,
   },
   {
     id: "3",
@@ -125,7 +128,7 @@ export const projectsData: Project[] = [
     demoUrl: "https://portf-lio-opal-nine.vercel.app",
     githubUrl: "https://github.com/LeandroRochaDosPrazeres/Portf-lio",
     featured: false,
-    size: "large",
+    size: "medium",
   },
 ];
 
