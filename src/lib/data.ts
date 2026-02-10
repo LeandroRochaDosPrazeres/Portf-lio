@@ -212,6 +212,8 @@ export const educationItems: EducationItem[] = [
 export interface NextStepItem {
   id: string;
   title: string;
+  subtitle: string;
+  stageFocus: string;
   description: string;
   status: "pesquisando" | "em andamento" | "planejado";
   focus: string[];
@@ -219,44 +221,64 @@ export interface NextStepItem {
 
 export const nextSteps: NextStepItem[] = [
   {
-    id: "ns-gcp-2",
-    title: "Google ACE Engineer",
+    id: "ns-devops-1",
+    title: "AWS Certified DevOps Engineer – Professional",
+    subtitle: "A Consolidação Técnica (DevOps)",
+    stageFocus: "Transformar desenvolvimento em produto escalável.",
     description:
-      "Objetivo de dominar a implementação técnica, gerenciamento de IAM e operações diárias em ambientes cloud através de CLI e Console.",
+      "Evoluir do desenvolvimento de código para o domínio da automação de infraestrutura. O foco é dominar Pipelines de CI/CD, IaC (Terraform/CloudFormation) e observabilidade para garantir entregas de software rápidas e seguras.",
     status: "planejado",
-    focus: ["Deploy", "IAM", "Observabilidade", "Automação"],
+    focus: ["CI/CD", "Automação", "Escalabilidade", "SRE"],
   },
   {
-    id: "ns-gcp-1",
-    title: "Digital Leader (Google Cloud)",
+    id: "ns-sec-cloud",
+    title: "AWS Certified Security – Specialty",
+    subtitle: "A Autoridade em Nuvem (Security)",
+    stageFocus: "Garantir que a arquitetura do SaaS seja blindada.",
     description:
-      "Foco em compreender a infraestrutura global do Google e os principais serviços de IaaS e PaaS para enxergar valor de negócio na nuvem.",
+      "Especialização profunda em proteção de dados e conformidade na nuvem. O objetivo é desenhar arquiteturas resilientes a ataques, gerenciamento de identidades (IAM) e resposta a incidentes em ambientes corporativos críticos.",
     status: "planejado",
-    focus: ["Google Cloud", "Fundamentos", "Estratégia", "Infraestrutura"],
+    focus: ["Cloud Security", "Compliance", "IAM", "Data Protection"],
   },
   {
-    id: "ns-sec-1",
+    id: "ns-sec-fundamentals",
     title: "Cybersecurity Fundamentals",
+    subtitle: "A Base de Defesa (Fundamentals)",
+    stageFocus: "Entender os princípios para dialogar com times de segurança.",
     description:
-      "Consolidar os pilares de confidencialidade, integridade e disponibilidade, além de criptografia, identidade e segurança de rede.",
+      "Solidificar os pilares de confidencialidade, integridade e disponibilidade (CIA Triad). Compreensão essencial de redes, criptografia e vetores de ataque para tomar decisões de engenharia mais seguras desde o design.",
     status: "pesquisando",
-    focus: ["Segurança", "Criptografia", "Identidade", "Blue Team"],
+    focus: ["Redes", "Criptografia", "Hardening", "Blue Team"],
   },
   {
-    id: "ns-sec-2",
-    title: "CompTIA CySA+",
+    id: "ns-sec-cysa",
+    title: "CompTIA CySA+ (Cybersecurity Analyst)",
+    subtitle: "Análise e Defesa (CySA+)",
+    stageFocus: "Visão tática de monitoramento e ameaças.",
     description:
-      "Desenvolver habilidades analíticas para detecção de vulnerabilidades, uso de ferramentas de monitoramento e resposta a incidentes.",
+      "Desenvolvimento de habilidades analíticas para detectar e prevenir ameaças cibernéticas. Foco em análise de vulnerabilidades, interpretação de logs e segurança baseada em comportamento para proteção contínua.",
     status: "pesquisando",
-    focus: ["Threat Hunting", "SIEM", "Resposta a Incidentes", "Detecção"],
+    focus: ["Threat Hunting", "SIEM", "Análise de Risco", "Defesa"],
   },
   {
-    id: "ns-sec-3",
-    title: "eJPT / CEH",
+    id: "ns-sec-redteam",
+    title: "eJPT / CEH (Ethical Hacking)",
+    subtitle: "Visão Ofensiva (Red Team)",
+    stageFocus: "\"Pensar como o invasor\" para liderar melhor a defesa.",
     description:
-      "Aprofundar práticas ofensivas para compreender como ataques acontecem e assim reforçar defesas.",
+      "Aprofundamento prático em táticas ofensivas e testes de intrusão. O objetivo não é ser um hacker, mas compreender a mentalidade do atacante para construir barreiras mais eficientes e liderar auditorias de segurança.",
     status: "pesquisando",
-    focus: ["Red Team", "Pentest", "Recon", "Exploração"],
+    focus: ["Pentest", "Exploração", "Auditoria", "Red Team"],
+  },
+  {
+    id: "ns-mba",
+    title: "MBA em Liderança e Gestão de Tecnologia",
+    subtitle: "O Nível Executivo (C-Level)",
+    stageFocus: "Preparação para liderar a estratégia da empresa.",
+    description:
+      "Transição da liderança técnica para a executiva. Desenvolvimento de competências para alinhar TI à estratégia de negócio, gestão financeira de projetos, liderança de pessoas e inovação corporativa.",
+    status: "planejado",
+    focus: ["Gestão de Times", "Estratégia", "Negócios", "C-Level"],
   },
 ];
 
@@ -274,7 +296,7 @@ export const certifications: CertificationItem[] = [
     id: "cert-aws",
     title: "AWS Developer Associate",
     institution: "Amazon Web Services",
-    year: "2025",
+    year: "2026",
     description: "Certificação que valida boas práticas de desenvolvimento serverless, integrações com APIs e observabilidade na AWS.",
     skills: ["Lambda", "API Gateway", "SQS/SNS", "CloudWatch"],
   },
