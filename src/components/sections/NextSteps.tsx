@@ -60,7 +60,7 @@ export function NextSteps() {
                 transition={{ duration: 0.4, delay: index * 0.1 }}
                 className="glass rounded-2xl p-6 flex flex-col gap-5 border border-border/40 hover:border-primary/40 transition-all group"
               >
-                {/* Header: Step number + Subtitle + Status */}
+                {/* Header: Step number + Title + Status */}
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center gap-3">
                     <div
@@ -72,9 +72,9 @@ export function NextSteps() {
                       <p className="text-xs text-muted-foreground uppercase tracking-widest">
                         Etapa {index + 1}
                       </p>
-                      <p className="text-sm font-semibold text-foreground/80 truncate">
-                        {item.subtitle}
-                      </p>
+                      <h3 className="text-base font-bold text-foreground leading-tight">
+                        {item.title}
+                      </h3>
                     </div>
                   </div>
                   <span
@@ -90,11 +90,8 @@ export function NextSteps() {
                   </span>
                 </div>
 
-                {/* Title */}
-                <h3 className="text-lg font-bold text-foreground leading-tight">{item.title}</h3>
-
                 {/* Stage Focus */}
-                <p className="text-xs italic text-muted-foreground -mt-3">
+                <p className="text-xs italic text-muted-foreground">
                   {item.stageFocus}
                 </p>
 

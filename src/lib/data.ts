@@ -169,20 +169,19 @@ export const allTechnologies = [
 
 export const setupItems = {
   hardware: [
-    { name: "MacBook Pro", description: "Desempenho profissional para desenvolvimento e deploys" },
-    { name: "Memória", description: "16GB RAM — Multitasking pesado sem compromisso" },
-    { name: "Teclado", description: "Mecânico Gamer — Precisão e conforto para longas sessões" },
-    { name: "Mouse", description: "Gamer — Ergonomia e responsividade no dia a dia" },
+    { name: "MacBook Pro", description: "16GB RAM" },
+    { name: "Teclado", description: "Mecânico Gamer" },
+    { name: "Mouse", description: "Gamer" },
   ],
   software: [
-    { name: "VS Code + Copilot", description: "Editor principal com IA integrada para produtividade máxima" },
-    { name: "Git & GitHub", description: "Versionamento, CI/CD pipelines e colaboração em equipe" },
-    { name: "Docker", description: "Containerização de aplicações e ambientes de desenvolvimento" },
-    { name: "AWS Console & CLI", description: "Gerenciamento de infraestrutura cloud e serviços serverless" },
-    { name: "Postman & Insomnia", description: "Testes de APIs REST/GraphQL e documentação de endpoints" },
-    { name: "Notion & Monday.com", description: "Gestão de projetos, documentação técnica e sprints" },
-    { name: "Figma", description: "Prototipagem de interfaces e design system colaborativo" },
-    { name: "Terminal (Zsh + Oh My Zsh)", description: "Shell customizado com aliases e plugins de produtividade" },
+    { name: "VS Code + Copilot", description: "Editor com IA" },
+    { name: "Git & GitHub", description: "Versionamento e CI/CD" },
+    { name: "Docker", description: "Containerização" },
+    { name: "AWS Console & CLI", description: "Cloud & Serverless" },
+    { name: "Postman", description: "Testes de APIs" },
+    { name: "Notion & Monday.com", description: "Gestão de Projetos" },
+    { name: "Figma", description: "Prototipagem UI/UX" },
+    { name: "Terminal (Zsh)", description: "Shell customizado" },
   ],
 };
 

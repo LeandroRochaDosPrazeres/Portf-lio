@@ -157,7 +157,7 @@ export function TechStack() {
           <p className="text-muted-foreground">O ambiente que uso para criar</p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-16 items-start">
           <SetupCard title="Hardware" icon={Monitor} items={setupItems.hardware} />
           <SetupCard title="Software & Ferramentas" icon={Code2} items={setupItems.software} />
         </div>
