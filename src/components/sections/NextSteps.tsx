@@ -23,24 +23,6 @@ const statusConfig = {
   },
 } as const;
 
-const stageColors = [
-  "from-blue-500 to-blue-600",
-  "from-blue-500 to-blue-600",
-  "from-purple-500 to-purple-600",
-  "from-purple-500 to-purple-600",
-  "from-red-500 to-red-600",
-  "from-orange-500 to-orange-600",
-];
-
-const stageBorderAccents = [
-  "hover:border-blue-500/40",
-  "hover:border-blue-500/40",
-  "hover:border-purple-500/40",
-  "hover:border-purple-500/40",
-  "hover:border-red-500/40",
-  "hover:border-orange-500/40",
-];
-
 export function NextSteps() {
   return (
     <section id="next-steps" className="py-24">
@@ -76,19 +58,13 @@ export function NextSteps() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.4, delay: index * 0.1 }}
-                className={cn(
-                  "glass rounded-2xl p-6 flex flex-col gap-5 border border-border/40 transition-all group",
-                  stageBorderAccents[index],
-                )}
+                className="glass rounded-2xl p-6 flex flex-col gap-5 border border-border/40 hover:border-primary/40 transition-all group"
               >
                 {/* Header: Step number + Subtitle + Status */}
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center gap-3">
                     <div
-                      className={cn(
-                        "w-12 h-12 shrink-0 rounded-2xl bg-gradient-to-br flex items-center justify-center text-white font-mono font-semibold text-lg tabular-nums leading-none",
-                        stageColors[index],
-                      )}
+                      className="w-12 h-12 shrink-0 rounded-2xl bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center text-white font-mono font-semibold text-lg tabular-nums leading-none"
                     >
                       {String(index + 1).padStart(2, "0")}
                     </div>
