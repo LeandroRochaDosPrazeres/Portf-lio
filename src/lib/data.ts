@@ -301,6 +301,7 @@ export interface CertificationItem {
   year: string;
   description: string;
   skills: string[];
+  certificateUrl?: string;
 }
 
 export const certifications: CertificationItem[] = [
@@ -311,6 +312,7 @@ export const certifications: CertificationItem[] = [
     year: "2026",
     description: "Certificação avançada que valida domínio em automação de infraestrutura, pipelines de CI/CD, IaC (Terraform/CloudFormation) e observabilidade para entregas de software rápidas e seguras em escala.",
     skills: ["CI/CD", "IaC", "CloudFormation", "Observabilidade", "SRE"],
+    certificateUrl: "/certificates/aws-devops.png",
   },
   {
     id: "cert-aws",
@@ -319,6 +321,7 @@ export const certifications: CertificationItem[] = [
     year: "2026",
     description: "Certificação que valida boas práticas de desenvolvimento serverless, integrações com APIs e observabilidade na AWS.",
     skills: ["Lambda", "API Gateway", "SQS/SNS", "CloudWatch"],
+    certificateUrl: "/certificates/aws-developer.png",
   },
   {
     id: "cert-5",
@@ -327,6 +330,7 @@ export const certifications: CertificationItem[] = [
     year: "2025",
     description: "Especialização em construção de Agentes de IA autônomos, orquestração de fluxos e integração de LLMs com dados de CRM para automação inteligente.",
     skills: ["Orquestração de IA", "Reasoning Engine", "Gestão de Ações"],
+    certificateUrl: "/certificates/salesforce-agentforce.png",
   },
   {
     id: "cert-3",
@@ -335,6 +339,7 @@ export const certifications: CertificationItem[] = [
     year: "2025",
     description: "Certificação focada em governança, automações e organização de workspaces colaborativos no Notion.",
     skills: ["Notion", "Automação", "Workspace Management"],
+    certificateUrl: "/certificates/notion-admin.png",
   },
   {
     id: "cert-4",
