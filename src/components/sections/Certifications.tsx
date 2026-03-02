@@ -3,8 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { certifications, CertificationItem } from "@/lib/data";
-import { BadgeCheck, X, ExternalLink } from "lucide-react";
-import Image from "next/image";
+import { BadgeCheck, X, Eye, ExternalLink } from "lucide-react";
 
 function CertificateModal({
   cert,
@@ -88,14 +87,13 @@ function CertificateModal({
 
         {/* Certificate Image */}
         {cert.certificateUrl && (
-          <div className="relative w-full bg-card/50">
-            <Image
+          <div className="relative w-full bg-card/50 p-4">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src={cert.certificateUrl}
               alt={`Certificado: ${cert.title}`}
-              width={1200}
-              height={850}
-              className="w-full h-auto object-contain"
-              quality={90}
+              className="w-full h-auto object-contain rounded-xl"
+              loading="lazy"
             />
           </div>
         )}
@@ -177,24 +175,27 @@ export function Certifications() {
                   </h3>
                   <p className="text-muted-foreground">{cert.institution}</p>
                 </div>
-                {cert.certificateUrl && (
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-                    <ExternalLink className="w-4 h-4 text-primary" />
-                  </div>
-                )}
               </div>
 
               <p className="text-muted-foreground text-sm leading-relaxed mb-4">{cert.description}</p>
 
-              <div className="flex flex-wrap gap-2">
-                {cert.skills.map((skill) => (
-                  <span
-                    key={skill}
-                    className="px-3 py-1 text-xs font-medium rounded-full bg-primary/10 text-primary"
-                  >
-                    {skill}
-                  </span>
-                ))}
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex flex-wrap gap-2">
+                  {cert.skills.map((skill) => (
+                    <span
+                      key={skill}
+                      className="px-3 py-1 text-xs font-medium rounded-full bg-primary/10 text-primary"
+                    >
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+                {cert.certificateUrl && (
+                  <div className="flex items-center gap-1.5 text-xs font-medium text-primary shrink-0 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20">
+                    <Eye className="w-3.5 h-3.5" />
+                    <span>Ver certificado</span>
+                  </div>
+                )}
               </div>
             </motion.div>
           ))}
