@@ -228,50 +228,60 @@ export interface NextStepItem {
   subtitle: string;
   stageFocus: string;
   description: string;
-  status: "pesquisando" | "em andamento" | "planejado";
+  status: "estudando" | "planejado" | "pesquisando" | "objetivo futuro";
   focus: string[];
 }
 
 export const nextSteps: NextStepItem[] = [
   {
-    id: "ns-sec-cloud",
+    id: "ns-architecture",
+    title: "Arquitetura de Software & System Design",
+    subtitle: "A Base Estrutural",
+    stageFocus: "Criar a base estrutural perfeita para o crescimento do SaaS.",
+    description:
+      "Domínio no desenho de sistemas distribuídos de alta disponibilidade e microsserviços. Foco em criar a base estrutural perfeita para o crescimento do SaaS, definindo padrões de comunicação, APIs e mensageria antes de escrever o código.",
+    status: "estudando",
+    focus: ["Microsserviços", "System Design", "Escalabilidade", "Arquitetura"],
+  },
+  {
+    id: "ns-llmops",
+    title: "Engenharia de IA & LLMOps",
+    subtitle: "IA em Produção",
+    stageFocus: "Integrar Inteligência Artificial de forma eficiente em produção.",
+    description:
+      "Aprofundamento na integração eficiente de Inteligência Artificial em produção. Criação de arquiteturas RAG (Retrieval-Augmented Generation), agentes autônomos e otimização de custos de APIs (OpenAI/Agentforce) para processamento de documentos complexos.",
+    status: "estudando",
+    focus: ["LLMOps", "OpenAI API", "RAG", "IA Generativa"],
+  },
+  {
+    id: "ns-aws-security",
     title: "AWS Certified Security – Specialty",
-    subtitle: "A Autoridade em Nuvem (Security)",
-    stageFocus: "Garantir que a arquitetura do SaaS seja blindada.",
+    subtitle: "Segurança em Nuvem",
+    stageFocus: "Blindar a infraestrutura do produto para o mercado B2B.",
     description:
-      "Especialização profunda em proteção de dados e conformidade na nuvem. O objetivo é desenhar arquiteturas resilientes a ataques, gerenciamento de identidades (IAM) e resposta a incidentes em ambientes corporativos críticos.",
+      "Especialização em proteção de dados e compliance corporativo na nuvem. O objetivo é garantir que a infraestrutura do produto atenda aos mais altos padrões de segurança B2B, blindando informações sensíveis de clientes corporativos.",
     status: "planejado",
-    focus: ["Cloud Security", "Compliance", "IAM", "Data Protection"],
+    focus: ["Cloud Security", "IAM", "Compliance", "Proteção de Dados"],
   },
   {
-    id: "ns-sec-fundamentals",
-    title: "Cybersecurity Fundamentals",
-    subtitle: "A Base de Defesa (Fundamentals)",
-    stageFocus: "Entender os princípios para dialogar com times de segurança.",
+    id: "ns-scrum",
+    title: "Liderança Ágil (Scrum Master)",
+    subtitle: "Liderança de Esquadrões",
+    stageFocus: "Liderar esquadrões de tecnologia com eficiência.",
     description:
-      "Solidificar os pilares de confidencialidade, integridade e disponibilidade (CIA Triad). Compreensão essencial de redes, criptografia e vetores de ataque para tomar decisões de engenharia mais seguras desde o design.",
+      "Preparação para liderar esquadrões de tecnologia no futuro. Foco em metodologias ágeis (Scrum/Kanban) para remover impedimentos do dia a dia, otimizar a velocidade de entrega e manter o time de engenharia focado.",
     status: "pesquisando",
-    focus: ["Redes", "Criptografia", "Hardening", "Blue Team"],
+    focus: ["Scrum Master", "Gestão de Times", "Agile", "Entrega Contínua"],
   },
   {
-    id: "ns-sec-cysa",
-    title: "CompTIA CySA+ (Cybersecurity Analyst)",
-    subtitle: "Análise e Defesa (CySA+)",
-    stageFocus: "Visão tática de monitoramento e ameaças.",
+    id: "ns-product",
+    title: "Product Management (Gestão de Produto)",
+    subtitle: "Visão Estratégica",
+    stageFocus: "Transição da mentalidade técnica para a visão de negócios.",
     description:
-      "Desenvolvimento de habilidades analíticas para detectar e prevenir ameaças cibernéticas. Foco em análise de vulnerabilidades, interpretação de logs e segurança baseada em comportamento para proteção contínua.",
+      "Transição da mentalidade puramente técnica para a visão estratégica de negócios. Entendimento profundo das dores do cliente corporativo, validação de mercado, criação de roadmaps e priorização de features que geram receita real.",
     status: "pesquisando",
-    focus: ["Threat Hunting", "SIEM", "Análise de Risco", "Defesa"],
-  },
-  {
-    id: "ns-sec-redteam",
-    title: "eJPT / CEH (Ethical Hacking)",
-    subtitle: "Visão Ofensiva (Red Team)",
-    stageFocus: "\"Pensar como o invasor\" para liderar melhor a defesa.",
-    description:
-      "Aprofundamento prático em táticas ofensivas e testes de intrusão. O objetivo não é ser um hacker, mas compreender a mentalidade do atacante para construir barreiras mais eficientes e liderar auditorias de segurança.",
-    status: "pesquisando",
-    focus: ["Pentest", "Exploração", "Auditoria", "Red Team"],
+    focus: ["Estratégia de Produto", "Visão B2B", "Negócios", "SaaS"],
   },
   {
     id: "ns-mba",
@@ -279,9 +289,9 @@ export const nextSteps: NextStepItem[] = [
     subtitle: "O Nível Executivo (C-Level)",
     stageFocus: "Preparação para liderar a estratégia da empresa.",
     description:
-      "Transição da liderança técnica para a executiva. Desenvolvimento de competências para alinhar TI à estratégia de negócio, gestão financeira de projetos, liderança de pessoas e inovação corporativa.",
-    status: "planejado",
-    focus: ["Gestão de Times", "Estratégia", "Negócios", "C-Level"],
+      "A consolidação executiva (C-Level). Preparação voltada para a gestão financeira de TI, tomada de decisões estratégicas de alto impacto, cultura organizacional e alinhamento total da tecnologia com o faturamento da empresa.",
+    status: "objetivo futuro",
+    focus: ["C-Level", "Estratégia Corporativa", "Liderança", "Finanças"],
   },
 ];
 

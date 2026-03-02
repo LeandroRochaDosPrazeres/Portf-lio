@@ -3,11 +3,11 @@
 import { motion } from "framer-motion";
 import { nextSteps } from "@/lib/data";
 import { cn } from "@/lib/utils";
-import { CalendarRange, PlaneTakeoff, BookOpenCheck } from "lucide-react";
+import { CalendarRange, PlaneTakeoff, BookOpenCheck, Rocket, Target } from "lucide-react";
 
 const statusConfig = {
-  "em andamento": {
-    label: "Em andamento",
+  estudando: {
+    label: "Estudando",
     color: "bg-primary/10 text-primary border-primary/30",
     icon: BookOpenCheck,
   },
@@ -20,6 +20,11 @@ const statusConfig = {
     label: "Pesquisando",
     color: "bg-accent/10 text-accent border-accent/30",
     icon: PlaneTakeoff,
+  },
+  "objetivo futuro": {
+    label: "Objetivo Futuro",
+    color: "bg-amber-500/10 text-amber-500 border-amber-500/30",
+    icon: Target,
   },
 } as const;
 
