@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { createPortal } from "react-dom";
+import { motion } from "framer-motion";
 import { certifications, CertificationItem } from "@/lib/data";
 import { BadgeCheck, X, Eye } from "lucide-react";
 
@@ -14,6 +15,14 @@ function CertificateModal({
 }) {
   const [imgLoaded, setImgLoaded] = useState(false);
   const [imgError, setImgError] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Animate in on mount
+  useEffect(() => {
+    requestAnimationFrame(() => setVisible(true));
+    closeButtonRef.current?.focus();
+  }, []);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -24,7 +33,6 @@ function CertificateModal({
 
   useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
-    // Previne scroll sem causar layout shift
     const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
     document.body.style.overflow = "hidden";
     document.body.style.paddingRight = `${scrollbarWidth}px`;
@@ -36,26 +44,32 @@ function CertificateModal({
   }, [handleKeyDown]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{ backgroundColor: "rgba(0, 0, 0, 0.75)" }}
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 transition-opacity duration-300"
+      style={{
+        backgroundColor: "rgba(0, 0, 0, 0.8)",
+        opacity: visible ? 1 : 0,
+      }}
     >
-      <motion.div
-        initial={{ scale: 0.9, opacity: 0, y: 20 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        exit={{ scale: 0.9, opacity: 0, y: 20 }}
-        transition={{ type: "spring", damping: 25, stiffness: 300 }}
-        className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-3xl"
-        style={{ backgroundColor: "var(--card)" }}
+      <div
+        className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-3xl shadow-2xl transition-all duration-300"
+        style={{
+          backgroundColor: "var(--card)",
+          transform: visible ? "scale(1) translateY(0)" : "scale(0.95) translateY(16px)",
+          opacity: visible ? 1 : 0,
+        }}
         role="dialog"
         aria-modal="true"
         aria-label={`Certificado: ${cert.title}`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-border">
+        <div
+          className="sticky top-0 z-10 flex items-center justify-between p-5 border-b rounded-t-3xl"
+          style={{
+            backgroundColor: "var(--card)",
+            borderColor: "var(--border)",
+          }}
+        >
           <div className="flex items-center gap-3 min-w-0">
             <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center text-white shrink-0">
               <BadgeCheck className="w-4 h-4" />
@@ -71,9 +85,16 @@ function CertificateModal({
           </div>
 
           <button
-            onClick={onClose}
-            className="w-9 h-9 rounded-full border border-border flex items-center justify-center hover:border-primary hover:text-primary transition-colors shrink-0 ml-3"
-            style={{ backgroundColor: "var(--background)" }}
+            ref={closeButtonRef}
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose();
+            }}
+            className="w-9 h-9 rounded-full border flex items-center justify-center hover:text-primary transition-colors shrink-0 ml-3"
+            style={{
+              backgroundColor: "var(--background)",
+              borderColor: "var(--border)",
+            }}
             aria-label="Fechar"
           >
             <X className="w-4 h-4" />
@@ -83,14 +104,12 @@ function CertificateModal({
         {/* Certificate Image */}
         {cert.certificateUrl && (
           <div className="w-full" style={{ backgroundColor: "var(--background)" }}>
-            {/* Loading skeleton */}
             {!imgLoaded && !imgError && (
               <div className="w-full h-64 flex items-center justify-center">
                 <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
               </div>
             )}
 
-            {/* Error state */}
             {imgError && (
               <div className="w-full h-48 flex flex-col items-center justify-center gap-2 text-muted-foreground">
                 <p className="text-sm">Não foi possível carregar a imagem</p>
@@ -118,7 +137,7 @@ function CertificateModal({
         )}
 
         {/* Skills */}
-        <div className="p-5 border-t border-border">
+        <div className="p-5" style={{ borderTop: "1px solid var(--border)" }}>
           <div className="flex flex-wrap gap-2">
             {cert.skills.map((skill) => (
               <span
@@ -130,8 +149,8 @@ function CertificateModal({
             ))}
           </div>
         </div>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 }
 
@@ -221,15 +240,15 @@ export function Certifications() {
         </div>
       </div>
 
-      {/* Certificate Modal */}
-      <AnimatePresence>
-        {selectedCert && (
+      {/* Modal via Portal — renderiza fora da section */}
+      {selectedCert &&
+        createPortal(
           <CertificateModal
             cert={selectedCert}
             onClose={() => setSelectedCert(null)}
-          />
+          />,
+          document.body,
         )}
-      </AnimatePresence>
     </section>
   );
 }
