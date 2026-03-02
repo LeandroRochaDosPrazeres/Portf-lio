@@ -24,10 +24,14 @@ function CertificateModal({
 
   useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
+    // Previne scroll sem causar layout shift
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
     document.body.style.overflow = "hidden";
+    document.body.style.paddingRight = `${scrollbarWidth}px`;
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "unset";
+      document.body.style.overflow = "";
+      document.body.style.paddingRight = "";
     };
   }, [handleKeyDown]);
 
@@ -38,7 +42,6 @@ function CertificateModal({
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{ backgroundColor: "rgba(0, 0, 0, 0.75)" }}
-      onClick={onClose}
     >
       <motion.div
         initial={{ scale: 0.9, opacity: 0, y: 20 }}
@@ -47,7 +50,6 @@ function CertificateModal({
         transition={{ type: "spring", damping: 25, stiffness: 300 }}
         className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-3xl"
         style={{ backgroundColor: "var(--card)" }}
-        onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
         aria-label={`Certificado: ${cert.title}`}
