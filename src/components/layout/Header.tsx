@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, useScroll, useMotionValueEvent, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
@@ -22,11 +22,11 @@ export function Header() {
   const [isVisible, setIsVisible] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  const lastScrollYRef = useRef(0);
   const { scrollYProgress, scrollY } = useScroll();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
-    const direction = latest > lastScrollY ? "down" : "up";
+    const direction = latest > lastScrollYRef.current ? "down" : "up";
     
     if (latest > 100) {
       setIsScrolled(true);
@@ -40,7 +40,7 @@ export function Header() {
       setIsVisible(true);
     }
     
-    setLastScrollY(latest);
+    lastScrollYRef.current = latest;
   });
 
   // Close mobile menu on resize

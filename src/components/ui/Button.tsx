@@ -1,8 +1,8 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { motion, HTMLMotionProps } from "framer-motion";
-import { forwardRef, ReactNode, useRef, useState } from "react";
+import { motion, useMotionValue, useSpring, HTMLMotionProps } from "framer-motion";
+import { forwardRef, ReactNode, useRef, useCallback } from "react";
 
 interface ButtonProps extends Omit<HTMLMotionProps<"button">, "children"> {
   children: ReactNode;
@@ -12,6 +12,8 @@ interface ButtonProps extends Omit<HTMLMotionProps<"button">, "children"> {
   icon?: ReactNode;
   iconPosition?: "left" | "right";
 }
+
+const springConfig = { stiffness: 150, damping: 15 };
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
@@ -28,19 +30,25 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const buttonRef = useRef<HTMLButtonElement>(null);
-    const [position, setPosition] = useState({ x: 0, y: 0 });
+    // Use motion values + springs instead of state to avoid re-renders
+    const motionX = useMotionValue(0);
+    const motionY = useMotionValue(0);
+    const springX = useSpring(motionX, springConfig);
+    const springY = useSpring(motionY, springConfig);
 
-    const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const handleMouseMove = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
       if (!magnetic || !buttonRef.current) return;
       const rect = buttonRef.current.getBoundingClientRect();
       const x = e.clientX - rect.left - rect.width / 2;
       const y = e.clientY - rect.top - rect.height / 2;
-      setPosition({ x: x * 0.15, y: y * 0.15 });
-    };
+      motionX.set(x * 0.15);
+      motionY.set(y * 0.15);
+    }, [magnetic, motionX, motionY]);
 
-    const handleMouseLeave = () => {
-      setPosition({ x: 0, y: 0 });
-    };
+    const handleMouseLeave = useCallback(() => {
+      motionX.set(0);
+      motionY.set(0);
+    }, [motionX, motionY]);
 
     const variants = {
       primary:
@@ -68,8 +76,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           magnetic && "magnetic-btn",
           className
         )}
-        animate={{ x: position.x, y: position.y }}
-        transition={{ type: "spring", stiffness: 150, damping: 15 }}
+        style={magnetic ? { x: springX, y: springY } : undefined}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         whileHover={{ scale: 1.02 }}

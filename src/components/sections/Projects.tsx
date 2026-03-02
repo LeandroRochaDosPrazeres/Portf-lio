@@ -143,7 +143,6 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
 }
 
 function ProjectCard({ project, index }: { project: Project; index: number }) {
-  const [isHovered, setIsHovered] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const Icon = projectIcons[project.id] || Briefcase;
   const gradient = projectGradients[project.id] || "from-primary to-secondary";
@@ -167,8 +166,6 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           "hover:border-primary/50 transition-all duration-500",
           "min-h-[320px]"
         )}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
         onClick={() => setShowModal(true)}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
@@ -185,13 +182,13 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
         <div className={cn(
           "absolute inset-0 opacity-10 bg-gradient-to-br transition-opacity duration-500",
           gradient,
-          isHovered && "opacity-20"
+          "group-hover:opacity-20"
         )} />
 
         {/* Animated Background Pattern */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-primary to-transparent rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-secondary to-transparent rounded-full blur-3xl transform -translate-x-1/2 translate-y-1/2" />
+        <div className="absolute inset-0 opacity-5" aria-hidden="true">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-primary to-transparent rounded-full blur-xl transform translate-x-1/2 -translate-y-1/2" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-secondary to-transparent rounded-full blur-xl transform -translate-x-1/2 translate-y-1/2" />
         </div>
 
         {/* Content */}
@@ -200,11 +197,9 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           <div className="flex items-start justify-between mb-4">
             <motion.div
               className={cn(
-                "w-14 h-14 rounded-2xl bg-gradient-to-br flex items-center justify-center shadow-lg",
+                "w-14 h-14 rounded-2xl bg-gradient-to-br flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:rotate-[5deg]",
                 gradient
               )}
-              animate={{ rotate: isHovered ? 5 : 0 }}
-              transition={{ type: "spring", stiffness: 300 }}
             >
               <Icon className="w-7 h-7 text-white" />
             </motion.div>
@@ -282,24 +277,22 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
               )}
             </div>
 
-            <motion.div
-              className="flex items-center gap-1 text-sm font-medium text-primary"
-              animate={{ x: isHovered ? 5 : 0 }}
+            <div
+              className="flex items-center gap-1 text-sm font-medium text-primary transition-transform duration-300 group-hover:translate-x-1"
             >
               <span>Ver mais</span>
               <ChevronRight className="w-4 h-4" />
-            </motion.div>
+            </div>
           </div>
         </div>
 
-        {/* Hover Glow Effect */}
-        <motion.div
+        {/* Hover Glow Effect — CSS only */}
+        <div
           className={cn(
-            "absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-500 pointer-events-none",
+            "absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-[0.05] transition-opacity duration-500 pointer-events-none",
             "bg-gradient-to-r",
             gradient
           )}
-          style={{ opacity: isHovered ? 0.05 : 0 }}
         />
       </motion.article>
 
@@ -317,9 +310,9 @@ export function Projects() {
   return (
     <section id="projects" className="py-24 relative overflow-hidden">
       {/* Background decoration */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 -left-32 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-secondary/5 rounded-full blur-3xl" />
+      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        <div className="absolute top-1/4 -left-32 w-96 h-96 bg-primary/5 rounded-full blur-xl" />
+        <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-secondary/5 rounded-full blur-xl" />
       </div>
 
       <div className="container mx-auto px-4 relative z-10">

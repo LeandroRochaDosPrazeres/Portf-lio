@@ -65,7 +65,6 @@ function TimelineCard({ item, index }: { item: TimelineItem; index: number }) {
         tabIndex={0}
         aria-expanded={isExpanded}
         whileHover={{ scale: 1.02 }}
-        layout
       >
         {/* Header */}
         <div className={cn("flex items-start gap-4", isLeft && "md:flex-row-reverse")}>
@@ -184,14 +183,14 @@ export function Timeline() {
         {/* Timeline */}
         <div className="relative">
           {/* Vertical Line */}
-          <div className="absolute left-4 md:left-1/2 top-0 bottom-0 hidden md:block pointer-events-none">
+          <div className="absolute left-4 md:left-1/2 top-0 bottom-0 hidden md:block pointer-events-none" aria-hidden="true">
             <div className="relative h-full flex items-stretch justify-center">
-              {/* Outer glow */}
-              <div className="absolute inset-y-0 -ml-5 w-10 bg-gradient-to-b from-primary/10 via-secondary/5 to-accent/10 blur-3xl opacity-70" />
+              {/* Outer glow — lightweight shadow instead of blur-3xl */}
+              <div className="absolute inset-y-0 -ml-3 w-6 bg-gradient-to-b from-primary/8 via-secondary/4 to-accent/8 opacity-70" />
               {/* Main line */}
-              <div className="w-[3px] rounded-full bg-gradient-to-b from-primary via-secondary to-accent shadow-[0_0_25px_rgba(139,92,246,0.35)]" />
-              {/* Inner shine */}
-              <div className="absolute inset-y-0 w-[1px] bg-white/40 opacity-70 animate-pulse" />
+              <div className="w-[3px] rounded-full bg-gradient-to-b from-primary via-secondary to-accent shadow-[0_0_15px_rgba(139,92,246,0.25)]" />
+              {/* Inner shine — static, no animate-pulse */}
+              <div className="absolute inset-y-0 w-[1px] bg-white/30 opacity-60" />
             </div>
           </div>
 

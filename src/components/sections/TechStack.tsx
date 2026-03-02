@@ -31,19 +31,16 @@ const techIcons: Record<string, React.ReactNode> = {
 
 function Marquee({ children, reverse = false }: { children: React.ReactNode; reverse?: boolean }) {
   return (
-    <div className="relative flex overflow-hidden py-4">
-      <motion.div
-        className={cn("flex gap-8 shrink-0", reverse && "flex-row-reverse")}
-        animate={{ x: reverse ? ["0%", "-50%"] : ["-50%", "0%"] }}
-        transition={{
-          duration: 30,
-          repeat: Infinity,
-          ease: "linear",
-        }}
+    <div className="relative flex overflow-hidden py-4 marquee-container">
+      <div
+        className={cn(
+          "flex gap-8 shrink-0 will-change-transform",
+          reverse ? "animate-marquee-reverse" : "animate-marquee"
+        )}
       >
         {children}
         {children}
-      </motion.div>
+      </div>
     </div>
   );
 }
