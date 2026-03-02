@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { certifications, CertificationItem } from "@/lib/data";
-import { BadgeCheck, X, Eye, ExternalLink } from "lucide-react";
+import { BadgeCheck, X, Eye } from "lucide-react";
 
 function CertificateModal({
   cert,
@@ -12,6 +12,9 @@ function CertificateModal({
   cert: CertificationItem;
   onClose: () => void;
 }) {
+  const [imgLoaded, setImgLoaded] = useState(false);
+  const [imgError, setImgError] = useState(false);
+
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -33,7 +36,8 @@ function CertificateModal({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-md"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ backgroundColor: "rgba(0, 0, 0, 0.75)" }}
       onClick={onClose}
     >
       <motion.div
@@ -41,70 +45,83 @@ function CertificateModal({
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.9, opacity: 0, y: 20 }}
         transition={{ type: "spring", damping: 25, stiffness: 300 }}
-        className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto glass rounded-3xl p-0"
+        className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-3xl"
+        style={{ backgroundColor: "var(--card)" }}
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
         aria-label={`Certificado: ${cert.title}`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-border/50">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center text-white">
-              <BadgeCheck className="w-5 h-5" />
+        <div className="flex items-center justify-between p-5 border-b border-border">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center text-white shrink-0">
+              <BadgeCheck className="w-4 h-4" />
             </div>
-            <div>
-              <h3 className="text-lg font-bold text-foreground leading-tight">
+            <div className="min-w-0">
+              <h3 className="text-base font-bold text-foreground leading-tight truncate">
                 {cert.title}
               </h3>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-xs text-muted-foreground">
                 {cert.institution} &bull; {cert.year}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            {cert.certificateUrl && (
-              <a
-                href={cert.certificateUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center hover:border-primary hover:text-primary transition-colors"
-                title="Abrir em nova aba"
-              >
-                <ExternalLink className="w-4 h-4" />
-              </a>
-            )}
-            <button
-              onClick={onClose}
-              className="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center hover:border-primary hover:text-primary transition-colors"
-              aria-label="Fechar"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
+          <button
+            onClick={onClose}
+            className="w-9 h-9 rounded-full border border-border flex items-center justify-center hover:border-primary hover:text-primary transition-colors shrink-0 ml-3"
+            style={{ backgroundColor: "var(--background)" }}
+            aria-label="Fechar"
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
 
         {/* Certificate Image */}
         {cert.certificateUrl && (
-          <div className="relative w-full bg-card/50 p-4">
+          <div className="w-full" style={{ backgroundColor: "var(--background)" }}>
+            {/* Loading skeleton */}
+            {!imgLoaded && !imgError && (
+              <div className="w-full h-64 flex items-center justify-center">
+                <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+              </div>
+            )}
+
+            {/* Error state */}
+            {imgError && (
+              <div className="w-full h-48 flex flex-col items-center justify-center gap-2 text-muted-foreground">
+                <p className="text-sm">Não foi possível carregar a imagem</p>
+                <a
+                  href={cert.certificateUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-primary underline"
+                >
+                  Abrir imagem diretamente
+                </a>
+              </div>
+            )}
+
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={cert.certificateUrl}
               alt={`Certificado: ${cert.title}`}
-              className="w-full h-auto object-contain rounded-xl"
-              loading="lazy"
+              className="block w-full h-auto"
+              style={{ display: imgLoaded ? "block" : "none" }}
+              onLoad={() => setImgLoaded(true)}
+              onError={() => setImgError(true)}
             />
           </div>
         )}
 
         {/* Skills */}
-        <div className="p-6 border-t border-border/50">
+        <div className="p-5 border-t border-border">
           <div className="flex flex-wrap gap-2">
             {cert.skills.map((skill) => (
               <span
                 key={skill}
-                className="px-3 py-1.5 text-sm font-medium rounded-full bg-primary/10 text-primary border border-primary/20"
+                className="px-3 py-1 text-xs font-medium rounded-full bg-primary/10 text-primary border border-primary/20"
               >
                 {skill}
               </span>
@@ -175,27 +192,27 @@ export function Certifications() {
                   </h3>
                   <p className="text-muted-foreground">{cert.institution}</p>
                 </div>
+                {cert.certificateUrl && (
+                  <div
+                    className="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0"
+                    title="Ver certificado"
+                  >
+                    <Eye className="w-3.5 h-3.5 text-primary" />
+                  </div>
+                )}
               </div>
 
               <p className="text-muted-foreground text-sm leading-relaxed mb-4">{cert.description}</p>
 
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex flex-wrap gap-2">
-                  {cert.skills.map((skill) => (
-                    <span
-                      key={skill}
-                      className="px-3 py-1 text-xs font-medium rounded-full bg-primary/10 text-primary"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-                {cert.certificateUrl && (
-                  <div className="flex items-center gap-1.5 text-xs font-medium text-primary shrink-0 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20">
-                    <Eye className="w-3.5 h-3.5" />
-                    <span>Ver certificado</span>
-                  </div>
-                )}
+              <div className="flex flex-wrap gap-2">
+                {cert.skills.map((skill) => (
+                  <span
+                    key={skill}
+                    className="px-3 py-1 text-xs font-medium rounded-full bg-primary/10 text-primary"
+                  >
+                    {skill}
+                  </span>
+                ))}
               </div>
             </motion.div>
           ))}
