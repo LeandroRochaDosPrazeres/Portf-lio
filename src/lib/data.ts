@@ -12,7 +12,6 @@ export const siteConfig = {
   phone: "+55 (11) 96615-5330",
   location: "São Paulo, SP",
   resumeUrl: "/cv.pdf",
-  calendlyUrl: "https://calendly.com/leandrorocha899",
   whatsappNumber: "5511966155330",
 };
 
