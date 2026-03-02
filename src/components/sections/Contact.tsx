@@ -10,6 +10,7 @@ import {
   Github,
   Linkedin,
   Calendar,
+  Coffee,
   MessageCircle,
   CheckCircle,
   AlertCircle,
@@ -18,11 +19,6 @@ import {
 import { Button } from "@/components/ui/Button";
 import { siteConfig, socialLinks } from "@/lib/data";
 import { cn } from "@/lib/utils";
-
-const socialIcons = {
-  github: Github,
-  linkedin: Linkedin,
-};
 
 interface FormData {
   name: string;
@@ -186,6 +182,30 @@ export function Contact() {
                 </motion.a>
               </div>
             </div>
+
+            {/* Calendly CTA */}
+            <motion.a
+              href={siteConfig.calendlyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="block glass rounded-2xl p-6 group hover:border-primary/50 transition-all duration-300"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shrink-0">
+                  <Coffee className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">
+                    Vamos tomar um café? ☕
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Agende um bate-papo rápido pelo Calendly
+                  </p>
+                </div>
+              </div>
+            </motion.a>
           </motion.div>
 
           {/* Contact Form */}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ExternalLink, Github, X, Smartphone, Bot, BarChart3, Briefcase, ChevronRight } from "lucide-react";
 import { projectsData, Project } from "@/lib/data";
@@ -26,6 +26,20 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
   const Icon = projectIcons[project.id] || Briefcase;
   const gradient = projectGradients[project.id] || "from-primary to-secondary";
 
+  // Close on Escape key
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (e.key === "Escape") onClose();
+  }, [onClose]);
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "unset";
+    };
+  }, [handleKeyDown]);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -41,6 +55,9 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
         transition={{ type: "spring", damping: 25, stiffness: 300 }}
         className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto glass rounded-3xl p-0"
         onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-label={`Detalhes do projeto ${project.title}`}
       >
         {/* Header com gradiente */}
         <div className={cn("relative h-32 bg-gradient-to-r rounded-t-3xl", gradient)}>
@@ -153,6 +170,15 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onClick={() => setShowModal(true)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            setShowModal(true);
+          }
+        }}
+        tabIndex={0}
+        role="button"
+        aria-label={`Ver detalhes do projeto ${project.title}`}
         whileHover={{ y: -5 }}
       >
         {/* Background Gradient */}
@@ -333,9 +359,9 @@ export function Projects() {
         >
           {[
             { label: "Projetos", value: projectsData.length, icon: "📦" },
-            { label: "Tecnologias", value: "15+", icon: "⚡" },
-            { label: "PWAs", value: "3", icon: "📱" },
-            { label: "Com IA", value: "2", icon: "🤖" },
+            { label: "Tecnologias", value: `${new Set(projectsData.flatMap(p => p.technologies)).size}+`, icon: "⚡" },
+            { label: "Em Destaque", value: projectsData.filter(p => p.featured).length, icon: "⭐" },
+            { label: "Em Desenvolvimento", value: projectsData.filter(p => p.inDevelopment).length, icon: "🚧" },
           ].map((stat, index) => (
             <motion.div
               key={stat.label}

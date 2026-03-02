@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowDown, Download } from "lucide-react";
+import { ArrowDown, Download, FolderOpen } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { siteConfig } from "@/lib/data";
 import Image from "next/image";
@@ -131,8 +131,18 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="flex items-center justify-center mb-24"
+            className="flex items-center justify-center gap-4 flex-wrap mb-24"
           >
+            <Link href="#projects">
+              <Button
+                variant="primary"
+                size="lg"
+                magnetic
+                icon={<FolderOpen className="w-5 h-5" />}
+              >
+                Ver Projetos
+              </Button>
+            </Link>
             <a href="/api/cv" download className="inline-flex">
               <Button
                 variant="outline"

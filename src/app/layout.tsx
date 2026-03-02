@@ -12,13 +12,14 @@ const inter = Inter({
 });
 
 const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-geist-mono",
+  variable: "--font-jetbrains-mono",
   subsets: ["latin"],
   display: "swap",
   preload: true,
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://portf-lio-opal-nine.vercel.app"),
   title: {
     default: `${siteConfig.name} | ${siteConfig.title}`,
     template: `%s | ${siteConfig.name}`,
@@ -39,7 +40,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "pt_BR",
-    url: "https://seu-dominio.com",
+    url: "https://portf-lio-opal-nine.vercel.app",
     title: `${siteConfig.name} | ${siteConfig.title}`,
     description: siteConfig.subheadline,
     siteName: siteConfig.name,

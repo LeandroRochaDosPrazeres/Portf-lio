@@ -55,6 +55,15 @@ function TimelineCard({ item, index }: { item: TimelineItem; index: number }) {
           "hover:border-primary/50 transition-all duration-300"
         )}
         onClick={() => setIsExpanded(!isExpanded)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            setIsExpanded(!isExpanded);
+          }
+        }}
+        role="button"
+        tabIndex={0}
+        aria-expanded={isExpanded}
         whileHover={{ scale: 1.02 }}
         layout
       >
