@@ -46,50 +46,77 @@ function CertificateModal({
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center p-4 transition-opacity duration-300"
       style={{
-        backgroundColor: "rgba(0, 0, 0, 0.85)",
+        backgroundColor: "rgba(0, 0, 0, 0.8)",
         opacity: visible ? 1 : 0,
       }}
     >
-      {/* Close button — floating top-right */}
-      <button
-        ref={closeButtonRef}
-        onClick={(e) => {
-          e.stopPropagation();
-          onClose();
-        }}
-        className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
-        aria-label="Fechar"
-      >
-        <X className="w-5 h-5" />
-      </button>
-
-      {/* Image only */}
       <div
-        className="relative max-w-4xl w-full max-h-[85vh] flex items-center justify-center transition-all duration-300"
+        className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-3xl shadow-2xl transition-all duration-300"
         style={{
-          transform: visible ? "scale(1)" : "scale(0.95)",
+          backgroundColor: "var(--card)",
+          transform: visible ? "scale(1) translateY(0)" : "scale(0.95) translateY(16px)",
           opacity: visible ? 1 : 0,
         }}
         role="dialog"
         aria-modal="true"
         aria-label={`Certificado: ${cert.title}`}
       >
+        {/* Header */}
+        <div
+          className="sticky top-0 z-10 flex items-center justify-between p-5 border-b rounded-t-3xl"
+          style={{
+            backgroundColor: "var(--card)",
+            borderColor: "var(--border)",
+          }}
+        >
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center text-white shrink-0">
+              <BadgeCheck className="w-4 h-4" />
+            </div>
+            <div className="min-w-0">
+              <h3 className="text-base font-bold text-foreground leading-tight truncate">
+                {cert.title}
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                {cert.institution} &bull; {cert.year}
+              </p>
+            </div>
+          </div>
+
+          <button
+            ref={closeButtonRef}
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose();
+            }}
+            className="w-9 h-9 rounded-full border flex items-center justify-center hover:text-primary transition-colors shrink-0 ml-3"
+            style={{
+              backgroundColor: "var(--background)",
+              borderColor: "var(--border)",
+            }}
+            aria-label="Fechar"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Certificate Image */}
         {cert.certificateUrl && (
-          <>
+          <div className="w-full" style={{ backgroundColor: "var(--background)" }}>
             {!imgLoaded && !imgError && (
               <div className="w-full h-64 flex items-center justify-center">
-                <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
               </div>
             )}
 
             {imgError && (
-              <div className="w-full h-48 flex flex-col items-center justify-center gap-2 text-white/70">
+              <div className="w-full h-48 flex flex-col items-center justify-center gap-2 text-muted-foreground">
                 <p className="text-sm">Não foi possível carregar a imagem</p>
                 <a
                   href={cert.certificateUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-white underline"
+                  className="text-sm text-primary underline"
                 >
                   Abrir imagem diretamente
                 </a>
@@ -100,12 +127,12 @@ function CertificateModal({
             <img
               src={cert.certificateUrl}
               alt={`Certificado: ${cert.title}`}
-              className="max-w-full max-h-[85vh] h-auto w-auto rounded-xl shadow-2xl object-contain"
+              className="block w-full h-auto rounded-b-3xl"
               style={{ display: imgLoaded ? "block" : "none" }}
               onLoad={() => setImgLoaded(true)}
               onError={() => setImgError(true)}
             />
-          </>
+          </div>
         )}
       </div>
     </div>
