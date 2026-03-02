@@ -34,9 +34,19 @@ export interface TimelineItem {
 
 export const timelineData: TimelineItem[] = [
   {
+    id: "00",
+    year: "Fev 2026 - Atual",
+    title: "Desenvolvedor Full Stack Junior",
+    subtitle: "Alest Consultoria",
+    description: "Arquitetura e desenvolvimento end-to-end de aplicações escaláveis, liderando a integração de modelos de linguagem (LLMs) em produtos de produção. Responsável por projetar APIs inteligentes, orquestrar pipelines de dados na AWS e entregar soluções que combinam engenharia de software robusta com Inteligência Artificial aplicada.",
+    type: "work",
+    technologies: ["Python", "Java", "TypeScript", "React", "AWS", "LLMs", "APIs", "Docker"],
+    achievements: ["Arquitetura de soluções com IA em ambiente de produção", "Entrega de APIs inteligentes integradas a LLMs", "Automação de processos críticos com ganho de eficiência"],
+  },
+  {
     id: "0",
-    year: "2025 - Atual",
-    title: "Desenvolvedor Full Stack",
+    year: "2025 - Fev 2026",
+    title: "Estagiário de Desenvolvimento de Software",
     subtitle: "Alest Consultoria",
     description: "Desenvolvimento de aplicações back-end e front-end com Python, Java, HTML e CSS, atuando na integração e criação de soluções com Inteligência Artificial (LLMs) e APIs inteligentes. Experiência em aplicar IA para automação e aprimoramento de processos.",
     type: "work",
@@ -224,16 +234,6 @@ export interface NextStepItem {
 
 export const nextSteps: NextStepItem[] = [
   {
-    id: "ns-devops-1",
-    title: "AWS Certified DevOps Engineer – Professional",
-    subtitle: "A Consolidação Técnica (DevOps)",
-    stageFocus: "Transformar desenvolvimento em produto escalável.",
-    description:
-      "Evoluir do desenvolvimento de código para o domínio da automação de infraestrutura. O foco é dominar Pipelines de CI/CD, IaC (Terraform/CloudFormation) e observabilidade para garantir entregas de software rápidas e seguras.",
-    status: "planejado",
-    focus: ["CI/CD", "Automação", "Escalabilidade", "SRE"],
-  },
-  {
     id: "ns-sec-cloud",
     title: "AWS Certified Security – Specialty",
     subtitle: "A Autoridade em Nuvem (Security)",
@@ -295,6 +295,14 @@ export interface CertificationItem {
 }
 
 export const certifications: CertificationItem[] = [
+  {
+    id: "cert-aws-devops",
+    title: "AWS Certified DevOps Engineer – Professional",
+    institution: "Amazon Web Services",
+    year: "2026",
+    description: "Certificação avançada que valida domínio em automação de infraestrutura, pipelines de CI/CD, IaC (Terraform/CloudFormation) e observabilidade para entregas de software rápidas e seguras em escala.",
+    skills: ["CI/CD", "IaC", "CloudFormation", "Observabilidade", "SRE"],
+  },
   {
     id: "cert-aws",
     title: "AWS Developer Associate",
