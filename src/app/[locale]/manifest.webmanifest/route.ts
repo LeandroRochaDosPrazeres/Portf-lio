@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { getPortfolioContent } from "@/lib/data";
-import { getHtmlLocale, isLocale } from "@/lib/i18n";
+import { getHtmlLocale, isLocale, locales } from "@/lib/i18n";
+
+export const dynamicParams = false;
+export const revalidate = 86400;
 
 interface ManifestRouteProps {
   params: Promise<{ locale: string }>;
@@ -11,6 +14,10 @@ const categories = {
   en: ["portfolio", "technology", "software"],
   es: ["portafolio", "tecnología", "software"],
 };
+
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }));
+}
 
 export async function GET(_request: Request, { params }: ManifestRouteProps) {
   const { locale } = await params;
@@ -30,8 +37,11 @@ export async function GET(_request: Request, { params }: ManifestRouteProps) {
       start_url: `/${locale}`,
       scope: "/",
       lang: getHtmlLocale(locale),
+      dir: "ltr",
       display: "standalone",
+      orientation: "any",
       categories: categories[locale],
+      prefer_related_applications: false,
       background_color: "#0a0a0b",
       theme_color: "#8b5cf6",
       icons: [
@@ -49,7 +59,8 @@ export async function GET(_request: Request, { params }: ManifestRouteProps) {
     },
     {
       headers: {
-        "Cache-Control": "public, max-age=3600, s-maxage=86400",
+        "Cache-Control":
+          "public, max-age=86400, s-maxage=604800, stale-while-revalidate=2592000",
         "Content-Language": getHtmlLocale(locale),
         "Content-Type": "application/manifest+json; charset=utf-8",
       },

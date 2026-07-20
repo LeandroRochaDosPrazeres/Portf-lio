@@ -3,10 +3,16 @@ import { NextResponse } from "next/server";
 import { renderToStream } from "@react-pdf/renderer";
 import CvDocument from "./CvDocument";
 import { getPortfolioContent } from "@/lib/data";
-import { getHtmlLocale, normalizeLocale } from "@/lib/i18n";
+import { getHtmlLocale, normalizeLocale, type Locale } from "@/lib/i18n";
 
-// Cache do PDF por 1 hora (revalidate a cada hora)
-export const revalidate = 3600;
+export const runtime = "nodejs";
+export const revalidate = 86400;
+
+const errorMessages: Record<Locale, string> = {
+  pt: "Não foi possível gerar o currículo.",
+  en: "The résumé could not be generated.",
+  es: "No se pudo generar el currículum.",
+};
 
 async function streamToBuffer(stream: NodeJS.ReadableStream) {
   return new Promise<Buffer>((resolve, reject) => {
@@ -19,7 +25,26 @@ async function streamToBuffer(stream: NodeJS.ReadableStream) {
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
-  const locale = normalizeLocale(requestUrl.searchParams.get("lang"));
+  const requestedLocale = requestUrl.searchParams.get("lang");
+  const locale = normalizeLocale(requestedLocale);
+  const queryEntries = [...requestUrl.searchParams.entries()];
+  const isCanonicalRequest =
+    queryEntries.length === 1 &&
+    queryEntries[0][0] === "lang" &&
+    requestedLocale === locale;
+
+  if (!isCanonicalRequest) {
+    const canonicalUrl = new URL("/api/cv", requestUrl.origin);
+    canonicalUrl.searchParams.set("lang", locale);
+
+    return NextResponse.redirect(canonicalUrl, {
+      status: 308,
+      headers: {
+        "Cache-Control": "public, max-age=86400",
+        "Content-Language": getHtmlLocale(locale),
+      },
+    });
+  }
 
   try {
     const content = getPortfolioContent(locale);
@@ -31,22 +56,20 @@ export async function GET(request: Request) {
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": `attachment; filename="${content.cv.fileName}"`,
+        "Content-Length": String(pdfBuffer.byteLength),
         "Content-Language": getHtmlLocale(locale),
-        "Cache-Control": "public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400",
+        "Cache-Control":
+          "public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800",
+        "X-Robots-Tag": "noindex, nofollow, noarchive",
       },
     });
   } catch (error) {
     console.error("CV generation failed:", error);
 
-    const errorMessages = {
-      pt: "Não foi possível gerar o currículo.",
-      en: "The résumé could not be generated.",
-      es: "No se pudo generar el currículum.",
-    };
-
     return new NextResponse(errorMessages[locale], {
       status: 500,
       headers: {
+        "Cache-Control": "no-store",
         "Content-Language": getHtmlLocale(locale),
         "Content-Type": "text/plain; charset=utf-8",
       },

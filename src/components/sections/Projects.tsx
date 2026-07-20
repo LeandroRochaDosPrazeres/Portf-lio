@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import {
   type RefObject,
   useCallback,
@@ -14,14 +15,23 @@ import {
   BarChart3,
   Bot,
   Briefcase,
+  Boxes,
   ChevronRight,
+  Code2,
   ExternalLink,
+  FileCheck2,
   Github,
   House,
+  LockKeyhole,
+  Sparkles,
   Smartphone,
+  Wrench,
   X,
 } from "lucide-react";
 import { usePortfolio } from "@/components/providers/LocaleProvider";
+import { trackPortfolioEvent } from "@/lib/analytics";
+import { isolatePageRegions } from "@/lib/accessibility";
+import type { Locale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 type ProjectItem = ReturnType<
@@ -45,6 +55,80 @@ const projectGradients: Record<string, string> = {
   "5": "from-cyan-500 via-sky-500 to-blue-500",
 };
 
+const projectCtaGradients: Record<string, string> = {
+  "1": "from-emerald-700 via-teal-700 to-cyan-700",
+  "2": "from-violet-700 via-purple-700 to-fuchsia-700",
+  "3": "from-orange-700 via-amber-700 to-orange-800",
+  "4": "from-blue-700 via-indigo-700 to-violet-700",
+  "5": "from-cyan-700 via-sky-700 to-blue-700",
+};
+
+function getProjectAnalyticsId(project: ProjectItem) {
+  return project.caseStudy?.slug || project.id;
+}
+
+function ProjectPreview({
+  project,
+  copy,
+}: {
+  project: ProjectItem;
+  copy: ProjectsCopy;
+}) {
+  const Icon = projectIcons[project.id] || Briefcase;
+  const gradient = projectGradients[project.id] || "from-primary to-secondary";
+
+  return (
+    <div
+      className={cn(
+        "relative h-44 overflow-hidden border-b border-white/10 bg-gradient-to-br",
+        gradient,
+      )}
+      role="img"
+      aria-label={`${copy.previewLabel}: ${project.title}`}
+    >
+      <div
+        className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.32),transparent_38%),linear-gradient(to_bottom,transparent,rgba(0,0,0,0.2))]"
+        aria-hidden="true"
+      />
+      <div
+        className="absolute inset-x-5 top-5 flex items-center justify-between rounded-t-xl border border-white/20 bg-black/25 px-4 py-2 backdrop-blur-md"
+        aria-hidden="true"
+      >
+        <div className="flex gap-1.5">
+          <span className="h-2 w-2 rounded-full bg-white/70" />
+          <span className="h-2 w-2 rounded-full bg-white/45" />
+          <span className="h-2 w-2 rounded-full bg-white/30" />
+        </div>
+        <span className="max-w-[65%] truncate text-xs font-semibold uppercase tracking-[0.15em] text-white/85">
+          {project.title}
+        </span>
+      </div>
+      <div
+        className="absolute inset-x-5 bottom-5 top-[53px] flex items-center gap-4 rounded-b-xl border-x border-b border-white/20 bg-black/20 px-5 backdrop-blur-sm"
+        aria-hidden="true"
+      >
+        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-white/30 bg-white/15 shadow-lg">
+          <Icon className="h-7 w-7 text-white" />
+        </div>
+        <div className="min-w-0 flex-1 space-y-2">
+          <div className="h-2.5 w-4/5 rounded-full bg-white/75" />
+          <div className="h-2 w-full rounded-full bg-white/30" />
+          <div className="flex gap-1.5">
+            {project.technologies.slice(0, 3).map((technology) => (
+              <span
+                key={technology}
+                className="truncate rounded-full border border-white/20 bg-white/10 px-2 py-0.5 text-[9px] font-medium text-white/85"
+              >
+                {technology}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const focusableSelector = [
   "a[href]",
   "button:not([disabled])",
@@ -67,16 +151,20 @@ function getFocusableElements(container: HTMLElement) {
 function ProjectModal({
   project,
   copy,
+  locale,
   onClose,
   returnFocusRef,
 }: {
   project: ProjectItem;
   copy: ProjectsCopy;
+  locale: Locale;
   onClose: () => void;
   returnFocusRef: RefObject<HTMLButtonElement | null>;
 }) {
   const Icon = projectIcons[project.id] || Briefcase;
   const gradient = projectGradients[project.id] || "from-primary to-secondary";
+  const ctaGradient =
+    projectCtaGradients[project.id] || "from-violet-700 to-blue-700";
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const generatedId = useId();
@@ -89,6 +177,7 @@ function ProjectModal({
     const previousPaddingRight = document.body.style.paddingRight;
     const scrollbarWidth =
       window.innerWidth - document.documentElement.clientWidth;
+    const restorePageRegions = isolatePageRegions();
 
     document.body.style.overflow = "hidden";
     document.body.style.paddingRight = `${scrollbarWidth}px`;
@@ -135,6 +224,7 @@ function ProjectModal({
       document.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = previousOverflow;
       document.body.style.paddingRight = previousPaddingRight;
+      restorePageRegions();
       requestAnimationFrame(() => returnFocusElement?.focus());
     };
   }, [onClose, returnFocusRef]);
@@ -186,8 +276,8 @@ function ProjectModal({
               {project.title}
             </h3>
             {project.inDevelopment && (
-              <span className="rounded-full border border-amber-500/30 bg-amber-500/20 px-3 py-1 text-xs font-semibold text-amber-500">
-                <span aria-hidden="true">🚧 </span>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-warning/30 bg-warning/10 px-3 py-1 text-xs font-semibold text-warning-text">
+                <Wrench className="h-3.5 w-3.5" aria-hidden="true" />
                 {copy.inDevelopmentLabel}
               </span>
             )}
@@ -222,21 +312,45 @@ function ProjectModal({
                 href={project.demoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() =>
+                  trackPortfolioEvent("project_demo_opened", {
+                    locale,
+                    project: getProjectAnalyticsId(project),
+                  })
+                }
                 className={cn(
                   "focus-ring flex items-center gap-2 rounded-full bg-gradient-to-r px-5 py-2.5 font-medium text-white transition-all duration-300 hover:scale-105 hover:shadow-lg",
-                  gradient,
+                  ctaGradient,
                 )}
                 aria-label={`${copy.demoLabel}: ${project.title}`}
               >
-                <ExternalLink className="h-4 w-4" aria-hidden="true" />
-                {copy.demoLabel}
+                {project.demoStatus === "authenticated" ? (
+                  <LockKeyhole className="h-4 w-4" aria-hidden="true" />
+                ) : (
+                  <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                )}
+                {project.demoStatus === "authenticated"
+                  ? copy.demoStatusLabels.authenticated
+                  : copy.demoLabel}
               </a>
+            )}
+            {!project.demoUrl && project.demoStatus === "maintenance" && (
+              <span className="inline-flex items-center gap-2 rounded-full border border-warning/30 bg-warning/10 px-5 py-2.5 text-sm font-medium text-warning-text">
+                <Wrench className="h-4 w-4" aria-hidden="true" />
+                {copy.demoStatusLabels.maintenance}
+              </span>
             )}
             {project.githubUrl && (
               <a
                 href={project.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() =>
+                  trackPortfolioEvent("project_repository_opened", {
+                    locale,
+                    project: getProjectAnalyticsId(project),
+                  })
+                }
                 className="focus-ring flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 font-medium text-foreground transition-all duration-300 hover:border-primary hover:text-primary"
                 aria-label={`${copy.sourceLabel}: ${project.title}`}
               >
@@ -255,15 +369,18 @@ function ProjectCard({
   project,
   index,
   copy,
+  locale,
 }: {
   project: ProjectItem;
   index: number;
   copy: ProjectsCopy;
+  locale: Locale;
 }) {
   const [showModal, setShowModal] = useState(false);
   const detailsButtonRef = useRef<HTMLButtonElement>(null);
-  const Icon = projectIcons[project.id] || Briefcase;
   const gradient = projectGradients[project.id] || "from-primary to-secondary";
+  const ctaGradient =
+    projectCtaGradients[project.id] || "from-violet-700 to-blue-700";
   const closeModal = useCallback(() => setShowModal(false), []);
 
   const sizeClasses = {
@@ -280,46 +397,29 @@ function ProjectCard({
         viewport={{ once: true, margin: "-50px" }}
         transition={{ duration: 0.5, delay: index * 0.1 }}
         className={cn(
-          "glass group relative min-h-[320px] overflow-hidden rounded-2xl transition-all duration-500 hover:border-primary/50",
+          "glass group relative flex min-h-[500px] flex-col overflow-hidden rounded-2xl transition-all duration-500 hover:border-primary/50",
           sizeClasses[project.size],
         )}
         whileHover={{ y: -5 }}
       >
-        <div
-          className={cn(
-            "absolute inset-0 bg-gradient-to-br opacity-10 transition-opacity duration-500 group-hover:opacity-20",
-            gradient,
-          )}
-          aria-hidden="true"
-        />
+        <ProjectPreview project={project} copy={copy} />
 
-        <div className="absolute inset-0 opacity-5" aria-hidden="true">
-          <div className="absolute right-0 top-0 h-64 w-64 translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br from-primary to-transparent blur-xl" />
-          <div className="absolute bottom-0 left-0 h-64 w-64 -translate-x-1/2 translate-y-1/2 rounded-full bg-gradient-to-tr from-secondary to-transparent blur-xl" />
-        </div>
-
-        <div className="relative flex h-full flex-col p-6">
-          <div className="mb-4 flex items-start justify-between">
-            <div
-              className={cn(
-                "flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br shadow-lg transition-transform duration-300 group-hover:rotate-[5deg]",
-                gradient,
-              )}
-              aria-hidden="true"
-            >
-              <Icon className="h-7 w-7 text-white" />
-            </div>
-
-            <div className="flex flex-col items-end gap-2">
+        <div className="relative flex flex-1 flex-col p-6">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+            <span className="inline-flex items-center gap-2 text-xs font-medium text-muted-foreground">
+              <FileCheck2 className="h-4 w-4 text-primary" aria-hidden="true" />
+              {project.evidence}
+            </span>
+            <div className="flex flex-wrap gap-2">
               {project.inDevelopment && (
-                <span className="rounded-full border border-amber-500/30 bg-amber-500/20 px-3 py-1 text-xs font-semibold text-amber-500">
-                  <span aria-hidden="true">🚧 </span>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-warning/30 bg-warning/10 px-2.5 py-1 text-xs font-semibold text-warning-text">
+                  <Wrench className="h-3.5 w-3.5" aria-hidden="true" />
                   {copy.inDevelopmentLabel}
                 </span>
               )}
               {project.featured && (
-                <span className="rounded-full border border-primary/30 bg-primary/20 px-3 py-1 text-xs font-semibold text-primary">
-                  <span aria-hidden="true">★ </span>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
+                  <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
                   {copy.featuredLabel}
                 </span>
               )}
@@ -327,10 +427,10 @@ function ProjectCard({
           </div>
 
           <div className="flex-1">
-            <h3 className="mb-2 text-xl font-bold text-foreground transition-colors group-hover:text-primary">
+            <h3 className="mb-2 text-2xl font-bold text-foreground transition-colors group-hover:text-primary">
               {project.title}
             </h3>
-            <p className="line-clamp-3 text-sm leading-relaxed text-muted-foreground">
+            <p className="text-sm leading-relaxed text-muted-foreground">
               {project.description}
             </p>
           </div>
@@ -353,44 +453,95 @@ function ProjectCard({
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border/50 pt-4">
-            <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2 border-t border-border/50 pt-4">
+            <div className="flex flex-1 flex-wrap items-center gap-2">
               {project.demoUrl && (
                 <a
                   href={project.demoUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="focus-ring flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card transition-colors hover:border-primary hover:text-primary"
+                  onClick={() =>
+                    trackPortfolioEvent("project_demo_opened", {
+                      locale,
+                      project: getProjectAnalyticsId(project),
+                    })
+                  }
+                  className="focus-ring inline-flex min-h-10 items-center gap-2 rounded-full border border-border bg-card px-3 py-2 text-xs font-medium text-foreground transition-colors hover:border-primary hover:text-primary"
                   aria-label={`${copy.demoLabel}: ${project.title}`}
                   title={copy.demoLabel}
                 >
-                  <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                  {project.demoStatus === "authenticated" ? (
+                    <LockKeyhole className="h-4 w-4" aria-hidden="true" />
+                  ) : (
+                    <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                  )}
+                  <span>
+                    {project.demoStatus === "authenticated"
+                      ? copy.demoStatusLabels.authenticated
+                      : copy.demoLabel}
+                  </span>
                 </a>
+              )}
+              {!project.demoUrl && project.demoStatus === "maintenance" && (
+                <span
+                  className="inline-flex min-h-10 items-center gap-2 rounded-full border border-warning/30 bg-warning/10 px-3 py-2 text-xs font-medium text-warning-text"
+                  role="status"
+                >
+                  <Wrench className="h-4 w-4" aria-hidden="true" />
+                  {copy.demoStatusLabels.maintenance}
+                </span>
               )}
               {project.githubUrl && (
                 <a
                   href={project.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="focus-ring flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card transition-colors hover:border-primary hover:text-primary"
+                  onClick={() =>
+                    trackPortfolioEvent("project_repository_opened", {
+                      locale,
+                      project: getProjectAnalyticsId(project),
+                    })
+                  }
+                  className="focus-ring inline-flex min-h-10 items-center gap-2 rounded-full border border-border bg-card px-3 py-2 text-xs font-medium text-foreground transition-colors hover:border-primary hover:text-primary"
                   aria-label={`${copy.sourceLabel}: ${project.title}`}
                   title={copy.sourceLabel}
                 >
                   <Github className="h-4 w-4" aria-hidden="true" />
+                  <span>{copy.sourceLabel}</span>
                 </a>
               )}
             </div>
 
-            <button
-              ref={detailsButtonRef}
-              type="button"
-              onClick={() => setShowModal(true)}
-              className="focus-ring flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium text-primary transition-transform duration-300 hover:translate-x-1"
-              aria-label={`${copy.detailsAriaLabel}: ${project.title}`}
-            >
-              <span>{copy.moreLabel}</span>
-              <ChevronRight className="h-4 w-4" aria-hidden="true" />
-            </button>
+            {project.caseStudy ? (
+              <Link
+                href={`/${locale}/projects/${project.caseStudy.slug}`}
+                onClick={() =>
+                  trackPortfolioEvent("project_case_opened", {
+                    locale,
+                    project: getProjectAnalyticsId(project),
+                  })
+                }
+                className={cn(
+                  "focus-ring inline-flex min-h-10 items-center gap-1 rounded-full bg-gradient-to-r px-4 py-2 text-sm font-semibold text-white shadow-lg transition-transform duration-300 hover:-translate-y-0.5",
+                  ctaGradient,
+                )}
+                aria-label={`${copy.caseAriaLabel}: ${project.title}`}
+              >
+                <span>{copy.caseLabel}</span>
+                <ChevronRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
+            ) : (
+              <button
+                ref={detailsButtonRef}
+                type="button"
+                onClick={() => setShowModal(true)}
+                className="focus-ring inline-flex min-h-10 items-center gap-1 rounded-full px-3 py-2 text-sm font-medium text-primary transition-transform duration-300 hover:translate-x-1"
+                aria-label={`${copy.detailsAriaLabel}: ${project.title}`}
+              >
+                <span>{copy.moreLabel}</span>
+                <ChevronRight className="h-4 w-4" aria-hidden="true" />
+              </button>
+            )}
           </div>
         </div>
 
@@ -409,6 +560,7 @@ function ProjectCard({
             <ProjectModal
               project={project}
               copy={copy}
+              locale={locale}
               onClose={closeModal}
               returnFocusRef={detailsButtonRef}
             />
@@ -420,28 +572,28 @@ function ProjectCard({
 }
 
 export function Projects() {
-  const { content } = usePortfolio();
+  const { content, locale } = usePortfolio();
   const copy = content.projects;
   const technologiesCount = new Set(
     copy.items.flatMap((project) => project.technologies),
   ).size;
 
   const stats = [
-    { label: copy.stats.projects, value: copy.items.length, icon: "📦" },
+    { label: copy.stats.projects, value: copy.items.length, icon: Boxes },
     {
       label: copy.stats.technologies,
       value: `${technologiesCount}+`,
-      icon: "⚡",
+      icon: Code2,
     },
     {
       label: copy.stats.featured,
       value: copy.items.filter((project) => project.featured).length,
-      icon: "★",
+      icon: Sparkles,
     },
     {
       label: copy.stats.inDevelopment,
       value: copy.items.filter((project) => project.inDevelopment).length,
-      icon: "🚧",
+      icon: Wrench,
     },
   ];
 
@@ -469,7 +621,7 @@ export function Projects() {
             viewport={{ once: true }}
             className="mb-4 inline-block rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary"
           >
-            <span aria-hidden="true">🚀 </span>
+            <Briefcase className="mr-2 inline-block h-4 w-4" aria-hidden="true" />
             {copy.eyebrow}
           </motion.span>
 
@@ -497,9 +649,10 @@ export function Projects() {
               transition={{ delay: index * 0.1 }}
               className="glass rounded-xl p-4 text-center"
             >
-              <span className="mb-1 block text-2xl" aria-hidden="true">
-                {stat.icon}
-              </span>
+              <stat.icon
+                className="mx-auto mb-2 h-6 w-6 text-primary"
+                aria-hidden="true"
+              />
               <span className="text-2xl font-bold text-foreground">
                 {stat.value}
               </span>
@@ -517,6 +670,7 @@ export function Projects() {
               project={project}
               index={index}
               copy={copy}
+              locale={locale}
             />
           ))}
         </div>

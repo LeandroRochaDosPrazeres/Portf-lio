@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import {
   Atom,
@@ -15,7 +16,9 @@ import {
   GitBranch,
   Globe,
   Monitor,
+  Pause,
   PanelsTopLeft,
+  Play,
   Plug,
   Smartphone,
   Sparkles,
@@ -49,17 +52,49 @@ const techIcons: Record<string, LucideIcon> = {
   Pandas: TableProperties,
 };
 
-function Marquee({ children, reverse = false }: { children: React.ReactNode; reverse?: boolean }) {
+const marqueeControlCopy = {
+  pt: {
+    pause: "Pausar animação das tecnologias",
+    resume: "Retomar animação das tecnologias",
+  },
+  en: {
+    pause: "Pause technology animation",
+    resume: "Resume technology animation",
+  },
+  es: {
+    pause: "Pausar animación de tecnologías",
+    resume: "Reanudar animación de tecnologías",
+  },
+} as const;
+
+function Marquee({
+  technologies,
+  reverse = false,
+  paused,
+}: {
+  technologies: string[];
+  reverse?: boolean;
+  paused: boolean;
+}) {
   return (
     <div className="relative flex overflow-hidden py-4 marquee-container">
       <div
+        data-paused={paused}
         className={cn(
-          "flex gap-8 shrink-0 will-change-transform",
-          reverse ? "animate-marquee-reverse" : "animate-marquee"
+          "marquee-track flex w-max shrink-0 will-change-transform",
+          reverse ? "animate-marquee-reverse" : "animate-marquee",
         )}
       >
-        {children}
-        {children}
+        <div className="flex shrink-0 gap-8 pr-8" role="list">
+          {technologies.map((technology) => (
+            <TechBadge key={technology} name={technology} />
+          ))}
+        </div>
+        <div className="flex shrink-0 gap-8 pr-8" aria-hidden="true">
+          {technologies.map((technology) => (
+            <TechBadge key={`duplicate-${technology}`} name={technology} />
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -70,6 +105,7 @@ function TechBadge({ name }: { name: string }) {
 
   return (
     <motion.div
+      role="listitem"
       whileHover={{ scale: 1.06, y: -4 }}
       className="group flex cursor-default items-center gap-3 rounded-full px-5 py-2.5 glass"
     >
@@ -134,6 +170,8 @@ function SetupCard({
 export function TechStack() {
   const { content } = usePortfolio();
   const { stack } = content;
+  const [isMarqueePaused, setIsMarqueePaused] = useState(false);
+  const marqueeCopy = marqueeControlCopy[content.locale];
   const firstHalf = stack.allTechnologies.slice(
     0,
     Math.ceil(stack.allTechnologies.length / 2),
@@ -163,16 +201,27 @@ export function TechStack() {
 
         {/* Marquee */}
         <div className="mb-16 -mx-4">
-          <Marquee>
-            {firstHalf.map((tech) => (
-              <TechBadge key={tech} name={tech} />
-            ))}
-          </Marquee>
-          <Marquee reverse>
-            {secondHalf.map((tech) => (
-              <TechBadge key={tech} name={tech} />
-            ))}
-          </Marquee>
+          <div className="mb-1 flex justify-end px-4">
+            <button
+              type="button"
+              onClick={() => setIsMarqueePaused((isPaused) => !isPaused)}
+              aria-pressed={isMarqueePaused}
+              className="focus-ring motion-reduce:hidden inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-card/80 px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary hover:text-primary"
+            >
+              {isMarqueePaused ? (
+                <Play className="h-4 w-4" aria-hidden="true" />
+              ) : (
+                <Pause className="h-4 w-4" aria-hidden="true" />
+              )}
+              {isMarqueePaused ? marqueeCopy.resume : marqueeCopy.pause}
+            </button>
+          </div>
+          <Marquee technologies={firstHalf} paused={isMarqueePaused} />
+          <Marquee
+            technologies={secondHalf}
+            reverse
+            paused={isMarqueePaused}
+          />
         </div>
 
         {/* Setup Section */}

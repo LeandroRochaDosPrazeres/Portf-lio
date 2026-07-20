@@ -1,225 +1,20 @@
 "use client";
 
-import {
-  type RefObject,
-  useCallback,
-  useEffect,
-  useId,
-  useRef,
-  useState,
-} from "react";
-import { createPortal } from "react-dom";
+import { useCallback, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
-import { BadgeCheck, Eye, X } from "lucide-react";
+import { BadgeCheck, Eye } from "lucide-react";
 import { usePortfolio } from "@/components/providers/LocaleProvider";
 
 type CertificationItem = ReturnType<
   typeof usePortfolio
 >["content"]["certifications"]["items"][number];
-type CertificationsCopy = ReturnType<
-  typeof usePortfolio
->["content"]["certifications"];
-
-const focusableSelector = [
-  "a[href]",
-  "button:not([disabled])",
-  "input:not([disabled])",
-  "select:not([disabled])",
-  "textarea:not([disabled])",
-  '[tabindex]:not([tabindex="-1"])',
-].join(",");
-
-function getFocusableElements(container: HTMLElement) {
-  return Array.from(
-    container.querySelectorAll<HTMLElement>(focusableSelector),
-  ).filter(
-    (element) =>
-      element.getAttribute("aria-hidden") !== "true" &&
-      !element.hasAttribute("hidden"),
-  );
-}
-
-function CertificateModal({
-  cert,
-  copy,
-  onClose,
-  returnFocusRef,
-}: {
-  cert: CertificationItem;
-  copy: CertificationsCopy;
-  onClose: () => void;
-  returnFocusRef: RefObject<HTMLButtonElement | null>;
-}) {
-  const [imgLoaded, setImgLoaded] = useState(false);
-  const [imgError, setImgError] = useState(false);
-  const [visible, setVisible] = useState(false);
-  const dialogRef = useRef<HTMLDivElement>(null);
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
-  const generatedId = useId();
-  const titleId = `certificate-title-${generatedId}`;
-
-  useEffect(() => {
-    const frame = requestAnimationFrame(() => {
-      setVisible(true);
-      closeButtonRef.current?.focus();
-    });
-
-    return () => cancelAnimationFrame(frame);
-  }, []);
-
-  useEffect(() => {
-    const returnFocusElement = returnFocusRef.current;
-    const previousOverflow = document.body.style.overflow;
-    const previousPaddingRight = document.body.style.paddingRight;
-    const scrollbarWidth =
-      window.innerWidth - document.documentElement.clientWidth;
-
-    document.body.style.overflow = "hidden";
-    document.body.style.paddingRight = `${scrollbarWidth}px`;
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        event.preventDefault();
-        onClose();
-        return;
-      }
-
-      if (event.key !== "Tab" || !dialogRef.current) return;
-
-      const focusableElements = getFocusableElements(dialogRef.current);
-      const firstElement = focusableElements[0];
-      const lastElement = focusableElements.at(-1);
-
-      if (!firstElement || !lastElement) {
-        event.preventDefault();
-        dialogRef.current.focus();
-        return;
-      }
-
-      if (event.shiftKey && document.activeElement === firstElement) {
-        event.preventDefault();
-        lastElement.focus();
-      } else if (!event.shiftKey && document.activeElement === lastElement) {
-        event.preventDefault();
-        firstElement.focus();
-      } else if (!dialogRef.current.contains(document.activeElement)) {
-        event.preventDefault();
-        firstElement.focus();
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = previousOverflow;
-      document.body.style.paddingRight = previousPaddingRight;
-      requestAnimationFrame(() => returnFocusElement?.focus());
-    };
-  }, [onClose, returnFocusRef]);
-
-  return (
-    <div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 transition-opacity duration-300"
-      style={{
-        backgroundColor: "rgba(0, 0, 0, 0.8)",
-        opacity: visible ? 1 : 0,
-      }}
-    >
-      <div
-        ref={dialogRef}
-        className="relative max-h-[90vh] w-full max-w-3xl overflow-y-auto overscroll-contain rounded-3xl shadow-2xl transition-all duration-300"
-        style={{
-          backgroundColor: "var(--card)",
-          transform: visible
-            ? "scale(1) translateY(0)"
-            : "scale(0.95) translateY(16px)",
-          opacity: visible ? 1 : 0,
-        }}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={titleId}
-        tabIndex={-1}
-      >
-        <div
-          className="sticky top-0 z-10 flex items-center justify-between rounded-t-3xl border-b p-5"
-          style={{
-            backgroundColor: "var(--card)",
-            borderColor: "var(--border)",
-          }}
-        >
-          <div className="flex min-w-0 items-center gap-3">
-            <div
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary via-secondary to-accent text-white"
-              aria-hidden="true"
-            >
-              <BadgeCheck className="h-4 w-4" />
-            </div>
-            <div className="min-w-0">
-              <h3
-                id={titleId}
-                className="truncate text-base font-bold leading-tight text-foreground"
-              >
-                {cert.title}
-              </h3>
-              <p className="text-xs text-muted-foreground">
-                {cert.institution} &bull; {cert.year}
-              </p>
-            </div>
-          </div>
-
-          <button
-            ref={closeButtonRef}
-            type="button"
-            onClick={onClose}
-            className="focus-ring ml-3 flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition-colors hover:text-primary"
-            style={{
-              backgroundColor: "var(--background)",
-              borderColor: "var(--border)",
-            }}
-            aria-label={copy.closeLabel}
-          >
-            <X className="h-4 w-4" aria-hidden="true" />
-          </button>
-        </div>
-
-        {cert.certificateUrl && (
-          <div className="w-full" style={{ backgroundColor: "var(--background)" }}>
-            {!imgLoaded && !imgError && (
-              <div className="flex h-64 w-full items-center justify-center" aria-hidden="true">
-                <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-              </div>
-            )}
-
-            {imgError && (
-              <div className="flex h-48 w-full flex-col items-center justify-center gap-2 text-muted-foreground">
-                <p className="text-sm">{copy.imageErrorLabel}</p>
-                <a
-                  href={cert.certificateUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="focus-ring text-sm text-primary underline"
-                >
-                  {copy.openImageLabel}
-                </a>
-              </div>
-            )}
-
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={cert.certificateUrl}
-              alt={`${copy.certificateAriaLabel}: ${cert.title}`}
-              className="block h-auto w-full rounded-b-3xl"
-              style={{ display: imgLoaded ? "block" : "none" }}
-              onLoad={() => setImgLoaded(true)}
-              onError={() => setImgError(true)}
-            />
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
+const CertificateModal = dynamic(() =>
+  import("@/components/sections/CertificateModal").then(
+    (mod) => mod.CertificateModal,
+  ),
+  { ssr: false },
+);
 
 function CertificationCardContent({
   cert,
@@ -320,16 +115,14 @@ export function Certifications() {
         </div>
       </div>
 
-      {selectedCert &&
-        createPortal(
-          <CertificateModal
-            cert={selectedCert}
-            copy={copy}
-            onClose={closeModal}
-            returnFocusRef={activeTriggerRef}
-          />,
-          document.body,
-        )}
+      {selectedCert && (
+        <CertificateModal
+          cert={selectedCert}
+          copy={copy}
+          onClose={closeModal}
+          returnFocusRef={activeTriggerRef}
+        />
+      )}
     </section>
   );
 }

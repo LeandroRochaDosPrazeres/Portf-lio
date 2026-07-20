@@ -21,8 +21,8 @@ const styles = StyleSheet.create({
   // Header
   header: {
     backgroundColor: colors.primary,
-    paddingTop: 25,
-    paddingBottom: 20,
+    paddingTop: 20,
+    paddingBottom: 14,
     paddingHorizontal: 30,
   },
   name: {
@@ -49,12 +49,13 @@ const styles = StyleSheet.create({
   // Corpo
   body: {
     flexDirection: "row",
+    flexGrow: 1,
   },
   // Coluna principal
   mainColumn: {
     width: "62%",
-    paddingTop: 20,
-    paddingBottom: 20,
+    paddingTop: 15,
+    paddingBottom: 15,
     paddingLeft: 30,
     paddingRight: 15,
   },
@@ -62,14 +63,14 @@ const styles = StyleSheet.create({
   sidebar: {
     width: "38%",
     backgroundColor: "#f8fafc",
-    paddingTop: 20,
-    paddingBottom: 20,
+    paddingTop: 15,
+    paddingBottom: 15,
     paddingLeft: 15,
     paddingRight: 20,
   },
   // Seções
   section: {
-    marginBottom: 14,
+    marginBottom: 10,
   },
   sectionTitle: {
     fontFamily: "Helvetica-Bold",
@@ -101,7 +102,7 @@ const styles = StyleSheet.create({
   },
   // Experiência
   experienceItem: {
-    marginBottom: 12,
+    marginBottom: 10,
   },
   experienceHeader: {
     flexDirection: "row",
@@ -257,7 +258,7 @@ const CvDocument: React.FC<CvDocumentProps> = ({ content }) => {
       subject={content.metadata.description}
       keywords={content.metadata.keywords.join(", ")}
     >
-      <Page size="A4" style={styles.page} wrap={false}>
+      <Page size="A4" style={styles.page}>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.name}>{siteConfig.name}</Text>
