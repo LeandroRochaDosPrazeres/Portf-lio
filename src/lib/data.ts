@@ -42,6 +42,30 @@ export interface Project {
   featured: boolean;
   size: "small" | "medium" | "large";
   inDevelopment?: boolean;
+  evidence: string;
+  demoStatus?: ProjectDemoStatus;
+  caseStudy?: ProjectCaseStudy;
+}
+
+export type ProjectDemoStatus = "available" | "authenticated" | "maintenance";
+
+export interface ProjectCaseDecision {
+  title: string;
+  description: string;
+}
+
+export interface ProjectCaseStudy {
+  slug: string;
+  summary: string;
+  status: string;
+  problem: string;
+  role: string;
+  responsibilities: string[];
+  decisions: ProjectCaseDecision[];
+  architecture: string[];
+  challenges: string[];
+  validations: string[];
+  outcome: string;
 }
 
 export interface TechCategory {
@@ -189,8 +213,27 @@ export interface PortfolioContent {
     sourceLabel: string;
     moreLabel: string;
     detailsAriaLabel: string;
+    caseLabel: string;
+    caseAriaLabel: string;
+    previewLabel: string;
+    demoStatusLabels: Record<ProjectDemoStatus, string>;
     githubCta: string;
     closeLabel: string;
+    casePage: {
+      backLabel: string;
+      eyebrow: string;
+      statusLabel: string;
+      problemLabel: string;
+      roleLabel: string;
+      responsibilitiesLabel: string;
+      decisionsLabel: string;
+      architectureLabel: string;
+      challengesLabel: string;
+      validationsLabel: string;
+      outcomeLabel: string;
+      linksLabel: string;
+      languageLabel: string;
+    };
     items: Project[];
   };
   stack: {
@@ -616,8 +659,31 @@ export const portfolioContent: Record<Locale, PortfolioContent> = {
       sourceLabel: "Código-fonte",
       moreLabel: "Ver detalhes",
       detailsAriaLabel: "Ver detalhes do projeto",
+      caseLabel: "Explorar estudo de caso",
+      caseAriaLabel: "Abrir estudo de caso do projeto",
+      previewLabel: "Visão visual do projeto",
+      demoStatusLabels: {
+        available: "Demonstração pública",
+        authenticated: "Acesso com conta",
+        maintenance: "Demonstração em manutenção",
+      },
       githubCta: "Ver todos os projetos no GitHub",
       closeLabel: "Fechar detalhes do projeto",
+      casePage: {
+        backLabel: "Voltar aos projetos",
+        eyebrow: "Estudo de caso do projeto",
+        statusLabel: "Estado atual",
+        problemLabel: "Problema",
+        roleLabel: "Meu papel",
+        responsibilitiesLabel: "Responsabilidades",
+        decisionsLabel: "Decisões de engenharia",
+        architectureLabel: "Fluxo da solução",
+        challengesLabel: "Desafios e limites",
+        validationsLabel: "Evidências e validações",
+        outcomeLabel: "Resultado",
+        linksLabel: "Explorar o projeto",
+        languageLabel: "Idioma do estudo de caso",
+      },
       items: [
         {
           id: "1",
@@ -636,11 +702,70 @@ export const portfolioContent: Record<Locale, PortfolioContent> = {
             "Dexie.js",
             "Recharts",
           ],
-          demoUrl: "https://iron-track-teal.vercel.app",
           githubUrl: "https://github.com/LeandroRochaDosPrazeres/IronTrack",
           featured: true,
           size: "medium",
           inDevelopment: true,
+          evidence: "Arquitetura sem conexão documentada",
+          demoStatus: "maintenance",
+          caseStudy: {
+            slug: "irontrack-ultra",
+            summary:
+              "Uma PWA centrada em dispositivos móveis que investiga como registrar treinos com resposta imediata, persistência local e uma evolução segura para sincronização em nuvem.",
+            status: "Protótipo funcional em evolução",
+            problem:
+              "Durante um treino, conexão instável não pode interromper o registro de séries, tempos de descanso ou histórico. O produto precisava priorizar velocidade no dispositivo e, ao mesmo tempo, preparar os dados para autenticação e sincronização futuras.",
+            role:
+              "Concepção do produto, modelagem da experiência, arquitetura e desenvolvimento full stack do protótipo.",
+            responsibilities: [
+              "Modelar programas, modelos de treino, exercícios, sessões e séries.",
+              "Desenhar uma experiência móvel com timers e consulta de histórico.",
+              "Estruturar persistência local, estado da interface e integração com Supabase.",
+              "Documentar limites, estratégia de testes e próximos passos da sincronização.",
+            ],
+            decisions: [
+              {
+                title: "Gravar primeiro no dispositivo",
+                description:
+                  "IndexedDB, acessado por Dexie.js, mantém a escrita disponível mesmo sem rede e evita bloquear a interface durante o treino.",
+              },
+              {
+                title: "Separar estado e persistência",
+                description:
+                  "Zustand coordena o estado de uso enquanto a camada local preserva dados, reduzindo o acoplamento entre telas e armazenamento.",
+              },
+              {
+                title: "Preparar a sincronização assíncrona",
+                description:
+                  "Uma fila de operações pendentes foi modelada para conectar o armazenamento local ao Supabase. A resolução completa de conflitos permanece uma evolução explícita.",
+              },
+              {
+                title: "Tratar a PWA como produto móvel",
+                description:
+                  "Service worker, instalação na tela inicial e componentes focados em toque sustentam o uso no contexto real de treino.",
+              },
+            ],
+            architecture: [
+              "Interface React",
+              "Estado Zustand",
+              "IndexedDB + Dexie",
+              "Fila de sincronização",
+              "Supabase",
+            ],
+            challenges: [
+              "Definir uma política de conflito antes de ativar sincronização bidirecional em produção.",
+              "Manter timers e ações rápidas claros em telas pequenas e durante interrupções.",
+              "Apresentar histórico e evolução sem atribuir ao produto caráter clínico ou de prescrição.",
+            ],
+            validations: [
+              "Repositório público com fluxo de dados, esquema e estratégia de operação sem conexão documentados.",
+              "TypeScript em modo estrito e tipos de banco gerados a partir do esquema Supabase.",
+              "Estratégia documentada de testes com Vitest e React Testing Library.",
+              "Configuração PWA e service worker descritos; o deploy público está temporariamente indisponível.",
+            ],
+            outcome:
+              "O projeto consolidou uma base técnica para sessões de treino resilientes à falta de rede e tornou visíveis as decisões ainda pendentes. Este estudo de caso não reivindica usuários ou métricas de negócio, e sinaliza com transparência que a demonstração pública está em manutenção.",
+          },
         },
         {
           id: "3",
@@ -662,6 +787,66 @@ export const portfolioContent: Record<Locale, PortfolioContent> = {
           githubUrl: "https://github.com/LeandroRochaDosPrazeres/LLControll",
           featured: true,
           size: "medium",
+          evidence: "Aplicação publicada com acesso autenticado",
+          demoStatus: "authenticated",
+          caseStudy: {
+            slug: "llcontrol",
+            summary:
+              "Uma PWA para reunir estoque, vendas, taxas e eventos do Mercado Livre em uma rotina operacional pensada para dispositivos móveis.",
+            status: "Aplicação publicada com acesso autenticado",
+            problem:
+              "Controlar produtos, vendas e taxas em ferramentas separadas aumenta retrabalho e reduz a visão do resultado de cada operação. A proposta foi centralizar o fluxo e preparar atualizações provenientes do marketplace.",
+            role:
+              "Concepção do produto, experiência em dispositivos móveis, modelagem de dados e desenvolvimento full stack das integrações.",
+            responsibilities: [
+              "Organizar dashboard, estoque, vendas, histórico e configurações em um único fluxo.",
+              "Modelar autenticação, persistência de dados e armazenamento de imagens com Supabase.",
+              "Implementar cálculo configurável de taxas e lucro por venda.",
+              "Estruturar o recebimento de eventos do Mercado Livre por webhook.",
+            ],
+            decisions: [
+              {
+                title: "Centralizar a operação",
+                description:
+                  "Produtos, vendas, metas e taxas compartilham o mesmo modelo, reduzindo a troca de contexto no acompanhamento diário.",
+              },
+              {
+                title: "Separar identidade, dados e arquivos",
+                description:
+                  "Supabase Auth, PostgreSQL e Storage cobrem autenticação, registros operacionais e fotos de produtos com responsabilidades claras.",
+              },
+              {
+                title: "Receber eventos do marketplace",
+                description:
+                  "Uma rota de webhook prepara a atualização de estoque, registro de venda e cálculo de resultado a partir de eventos de pedidos.",
+              },
+              {
+                title: "Priorizar interação móvel",
+                description:
+                  "Tab bar inferior, safe areas, gestos e modais deslizantes aproximam a experiência de uma ferramenta operacional nativa.",
+              },
+            ],
+            architecture: [
+              "PWA Next.js",
+              "Supabase Auth",
+              "PostgreSQL + Storage",
+              "Webhook Mercado Livre",
+              "Dashboard operacional",
+            ],
+            challenges: [
+              "Manter eventos de webhook confiáveis e evitar efeitos duplicados em atualizações de estoque.",
+              "Tratar taxas do marketplace como configuração, não como valores permanentes no código.",
+              "Demonstrar o produto sem expor dados operacionais ou credenciais de uma conta real.",
+            ],
+            validations: [
+              "Aplicação publicada e protegida por autenticação; a visita pública chega corretamente ao login.",
+              "Repositório público documenta funcionalidades, estrutura e integração por webhook.",
+              "Fórmula de cálculo de taxas e lucro está documentada com parâmetros configuráveis.",
+              "Manifesto e estratégia PWA fazem parte da estrutura documentada do projeto.",
+            ],
+            outcome:
+              "O projeto materializou uma superfície funcional para centralizar a rotina de estoque e vendas. O acesso público comprova o fluxo autenticado, mas dados internos e métricas de negócio não são expostos nem reivindicados neste estudo de caso.",
+          },
         },
         {
           id: "5",
@@ -674,19 +859,79 @@ export const portfolioContent: Record<Locale, PortfolioContent> = {
           featured: true,
           size: "medium",
           inDevelopment: true,
+          evidence: "Estudo acadêmico conceitual",
         },
         {
           id: "2",
           title: "BotLink",
           description:
-            "Assistente experimental para organizar informações de candidatura com apoio de IA e confirmação humana.",
+            "Protótipo educacional sobre IA e automação de candidaturas, apresentado com foco em arquitetura, riscos e limites.",
           longDescription:
-            "Projeto de estudo que combina automação de navegador e LLMs para ler contexto, estruturar informações e sugerir respostas em fluxos de candidatura. Qualquer envio ou ação externa depende de revisão e confirmação do usuário; o foco é explorar integração, limites operacionais e responsabilidade no uso de IA.",
+            "Projeto de estudo que combina automação de navegador e LLMs para explorar leitura de contexto e estruturação de respostas. O repositório original automatiza ações e traz um aviso legal; por isso, este portfólio o apresenta como experimento educacional, não como solução recomendada para produção. Uma evolução responsável deve exigir revisão humana antes de qualquer ação externa.",
           technologies: ["Python", "Playwright", "OpenAI API", "Flet", "Arquitetura Limpa"],
           githubUrl: "https://github.com/LeandroRochaDosPrazeres/BotLink",
           featured: false,
           size: "medium",
           inDevelopment: true,
+          evidence: "IA aplicada com riscos explicitados",
+          caseStudy: {
+            slug: "botlink",
+            summary:
+              "Um experimento em Python que separa automação de navegador, integração com LLM e interface para estudar possibilidades e riscos de fluxos de candidatura assistidos por IA.",
+            status: "Protótipo educacional · não indicado para produção",
+            problem:
+              "Candidaturas repetem leitura de contexto, dados de currículo e respostas semelhantes. Automatizar esse fluxo parece atraente, mas envolve credenciais, dados pessoais, termos de uso e o risco de uma IA executar ações incorretas em nome do usuário.",
+            role:
+              "Arquitetura do protótipo, integração técnica entre navegador e LLM e análise dos limites para uma evolução responsável.",
+            responsibilities: [
+              "Separar regras de domínio, casos de uso, adaptadores externos e interface.",
+              "Integrar Playwright para navegação e OpenAI para interpretação de contexto.",
+              "Definir limites operacionais, pausas e interrupção após erros consecutivos.",
+              "Documentar riscos legais e requisitos de revisão humana para qualquer evolução.",
+            ],
+            decisions: [
+              {
+                title: "Isolar dependências externas",
+                description:
+                  "Clean Architecture separa domínio, aplicação, infraestrutura e apresentação para que navegador ou provedor de IA possam ser substituídos.",
+              },
+              {
+                title: "Limitar a automação",
+                description:
+                  "O protótipo documenta limites, pausas e abortos após erros para reduzir comportamento descontrolado durante a experimentação.",
+              },
+              {
+                title: "Tratar IA como componente falível",
+                description:
+                  "Respostas geradas precisam ser consideradas sugestões. Uma versão responsável deve tornar a confirmação humana obrigatória antes de qualquer envio.",
+              },
+              {
+                title: "Não mascarar o risco do produto",
+                description:
+                  "O estudo de caso diferencia claramente a exploração técnica do uso autorizado em produção e mantém visível o aviso sobre termos de serviço.",
+              },
+            ],
+            architecture: [
+              "Interface Flet",
+              "Casos de uso",
+              "Adaptador Playwright",
+              "Adaptador OpenAI",
+              "Registros locais",
+            ],
+            challenges: [
+              "Respeitar termos de uso e não contornar mecanismos de proteção de plataformas.",
+              "Proteger credenciais, currículo e demais dados pessoais processados pelo fluxo.",
+              "Impedir que respostas imprecisas ou ações irreversíveis sejam executadas sem revisão.",
+            ],
+            validations: [
+              "Repositório público com estrutura de Clean Architecture documentada.",
+              "Comandos de teste com pytest e cobertura estão documentados.",
+              "Limites operacionais e interrupção por erros fazem parte da documentação.",
+              "Aviso legal reconhece explicitamente possíveis conflitos com termos de serviço.",
+            ],
+            outcome:
+              "O resultado é um aprendizado reutilizável sobre integração entre navegador e IA, acompanhado de um mapa claro de riscos. O estudo de caso não reivindica automação segura em produção; qualquer próxima versão deve reduzir o escopo para assistência e confirmação humana explícita.",
+          },
         },
         {
           id: "4",
@@ -706,6 +951,8 @@ export const portfolioContent: Record<Locale, PortfolioContent> = {
           githubUrl: "https://github.com/LeandroRochaDosPrazeres/Portf-lio",
           featured: false,
           size: "medium",
+          evidence: "Aplicação em produção e código público",
+          demoStatus: "available",
         },
       ],
     },
@@ -1187,8 +1434,31 @@ export const portfolioContent: Record<Locale, PortfolioContent> = {
       sourceLabel: "Source code",
       moreLabel: "View details",
       detailsAriaLabel: "View project details",
+      caseLabel: "Explore case study",
+      caseAriaLabel: "Open project case study",
+      previewLabel: "Project visual overview",
+      demoStatusLabels: {
+        available: "Public demo",
+        authenticated: "Account required",
+        maintenance: "Demo under maintenance",
+      },
       githubCta: "View all projects on GitHub",
       closeLabel: "Close project details",
+      casePage: {
+        backLabel: "Back to projects",
+        eyebrow: "Project case study",
+        statusLabel: "Current status",
+        problemLabel: "Problem",
+        roleLabel: "My role",
+        responsibilitiesLabel: "Responsibilities",
+        decisionsLabel: "Engineering decisions",
+        architectureLabel: "Solution flow",
+        challengesLabel: "Challenges and boundaries",
+        validationsLabel: "Evidence and validation",
+        outcomeLabel: "Outcome",
+        linksLabel: "Explore the project",
+        languageLabel: "Case study language",
+      },
       items: [
         {
           id: "1",
@@ -1207,11 +1477,70 @@ export const portfolioContent: Record<Locale, PortfolioContent> = {
             "Dexie.js",
             "Recharts",
           ],
-          demoUrl: "https://iron-track-teal.vercel.app",
           githubUrl: "https://github.com/LeandroRochaDosPrazeres/IronTrack",
           featured: true,
           size: "medium",
           inDevelopment: true,
+          evidence: "Documented offline-first architecture",
+          demoStatus: "maintenance",
+          caseStudy: {
+            slug: "irontrack-ultra",
+            summary:
+              "A mobile-first PWA exploring how workout logging can remain responsive through local persistence and evolve safely toward cloud synchronization.",
+            status: "Functional prototype in progress",
+            problem:
+              "During a workout, an unstable connection cannot interrupt set logging, rest timers, or history access. The product had to prioritize on-device speed while preparing data for future authentication and synchronization.",
+            role:
+              "Product concept, experience modeling, architecture, and full-stack prototype development.",
+            responsibilities: [
+              "Model programs, workout templates, exercises, sessions, and sets.",
+              "Design a mobile experience with timers and training history.",
+              "Structure local persistence, interface state, and Supabase integration.",
+              "Document boundaries, the testing strategy, and synchronization next steps.",
+            ],
+            decisions: [
+              {
+                title: "Write to the device first",
+                description:
+                  "IndexedDB, accessed through Dexie.js, keeps writes available without a network and avoids blocking the interface during a workout.",
+              },
+              {
+                title: "Separate state from persistence",
+                description:
+                  "Zustand coordinates active-use state while the local layer preserves data, reducing coupling between screens and storage.",
+              },
+              {
+                title: "Prepare asynchronous synchronization",
+                description:
+                  "A pending-operation queue was modeled to connect local storage to Supabase. Complete conflict resolution remains an explicit next step.",
+              },
+              {
+                title: "Treat the PWA as a mobile product",
+                description:
+                  "A service worker, home-screen installation, and touch-focused components support the real workout context.",
+              },
+            ],
+            architecture: [
+              "React interface",
+              "Zustand state",
+              "IndexedDB + Dexie",
+              "Synchronization queue",
+              "Supabase",
+            ],
+            challenges: [
+              "Define a conflict policy before enabling bidirectional production synchronization.",
+              "Keep timers and quick actions clear on small screens and through interruptions.",
+              "Present history and progress without positioning the product as clinical or prescriptive.",
+            ],
+            validations: [
+              "Public repository documents the data flow, schema, and offline-first strategy.",
+              "Strict TypeScript and database types generated from the Supabase schema are documented.",
+              "A Vitest and React Testing Library strategy is documented.",
+              "PWA and service-worker setup are described; the public deployment is temporarily unavailable.",
+            ],
+            outcome:
+              "The project established a technical foundation for workout sessions resilient to network loss and made unfinished decisions visible. This case study claims no users or business metrics and transparently marks the public demo as under maintenance.",
+          },
         },
         {
           id: "3",
@@ -1233,6 +1562,66 @@ export const portfolioContent: Record<Locale, PortfolioContent> = {
           githubUrl: "https://github.com/LeandroRochaDosPrazeres/LLControll",
           featured: true,
           size: "medium",
+          evidence: "Published application with authenticated access",
+          demoStatus: "authenticated",
+          caseStudy: {
+            slug: "llcontrol",
+            summary:
+              "A PWA bringing inventory, sales, fees, and Mercado Livre events into a mobile-first operational workflow.",
+            status: "Published application with authenticated access",
+            problem:
+              "Managing products, sales, and fees across separate tools creates rework and weakens visibility into each operation. The proposal was to centralize the workflow and prepare updates coming from the marketplace.",
+            role:
+              "Product concept, mobile experience, data modeling, and full-stack integration development.",
+            responsibilities: [
+              "Organize dashboard, inventory, sales, history, and settings into one flow.",
+              "Model authentication, data persistence, and image storage with Supabase.",
+              "Implement configurable fee and per-sale profit calculations.",
+              "Structure Mercado Livre event intake through a webhook.",
+            ],
+            decisions: [
+              {
+                title: "Centralize operations",
+                description:
+                  "Products, sales, targets, and fees share one model, reducing context switching in daily monitoring.",
+              },
+              {
+                title: "Separate identity, data, and files",
+                description:
+                  "Supabase Auth, PostgreSQL, and Storage cover authentication, operational records, and product images with clear responsibilities.",
+              },
+              {
+                title: "Receive marketplace events",
+                description:
+                  "A webhook route prepares inventory updates, sale records, and result calculations from order events.",
+              },
+              {
+                title: "Prioritize mobile interaction",
+                description:
+                  "A bottom tab bar, safe areas, gestures, and slide-up modals bring the experience closer to a native operational tool.",
+              },
+            ],
+            architecture: [
+              "Next.js PWA",
+              "Supabase Auth",
+              "PostgreSQL + Storage",
+              "Mercado Livre webhook",
+              "Operational dashboard",
+            ],
+            challenges: [
+              "Keep webhook events reliable and avoid duplicate effects on inventory updates.",
+              "Treat marketplace fees as configuration rather than permanent values in code.",
+              "Demonstrate the product without exposing operational data or real-account credentials.",
+            ],
+            validations: [
+              "The application is published and authentication-protected; public visits correctly reach the login flow.",
+              "The public repository documents features, structure, and webhook integration.",
+              "The fee and profit formula is documented with configurable parameters.",
+              "The project structure documents its manifest and PWA strategy.",
+            ],
+            outcome:
+              "The project delivered a functional surface for centralizing inventory and sales routines. Public access demonstrates the authenticated flow, while internal data and business metrics are neither exposed nor claimed in this case study.",
+          },
         },
         {
           id: "5",
@@ -1245,19 +1634,79 @@ export const portfolioContent: Record<Locale, PortfolioContent> = {
           featured: true,
           size: "medium",
           inDevelopment: true,
+          evidence: "Conceptual academic study",
         },
         {
           id: "2",
           title: "BotLink",
           description:
-            "An experimental assistant for organizing application information with AI support and human confirmation.",
+            "An educational prototype about AI and job-application automation, presented through its architecture, risks, and boundaries.",
           longDescription:
-            "A study project combining browser automation and LLMs to read context, structure information, and suggest answers in application workflows. Any submission or external action requires user review and confirmation; the focus is on integration, operational boundaries, and responsible AI use.",
+            "A study project combining browser automation and LLMs to explore context reading and answer structuring. The original repository automates actions and includes a legal warning, so this portfolio presents it as an educational experiment rather than a production recommendation. A responsible evolution must require human review before any external action.",
           technologies: ["Python", "Playwright", "OpenAI API", "Flet", "Clean Architecture"],
           githubUrl: "https://github.com/LeandroRochaDosPrazeres/BotLink",
           featured: false,
           size: "medium",
           inDevelopment: true,
+          evidence: "Applied AI with explicit risk disclosure",
+          caseStudy: {
+            slug: "botlink",
+            summary:
+              "A Python experiment separating browser automation, LLM integration, and interface concerns to study both the possibilities and risks of AI-assisted application workflows.",
+            status: "Educational prototype · not recommended for production",
+            problem:
+              "Applications repeatedly involve reading context, résumé data, and similar questions. Automating that flow is tempting, but it involves credentials, personal data, terms of service, and the risk of AI taking incorrect actions on a user's behalf.",
+            role:
+              "Prototype architecture, technical integration between browser and LLM, and analysis of the boundaries required for responsible evolution.",
+            responsibilities: [
+              "Separate domain rules, use cases, external adapters, and interface concerns.",
+              "Integrate Playwright for browsing and OpenAI for context interpretation.",
+              "Define operational limits, pauses, and interruption after consecutive errors.",
+              "Document legal risks and human-review requirements for any future version.",
+            ],
+            decisions: [
+              {
+                title: "Isolate external dependencies",
+                description:
+                  "Clean Architecture separates domain, application, infrastructure, and presentation so the browser or AI provider can be replaced.",
+              },
+              {
+                title: "Constrain automation",
+                description:
+                  "The prototype documents limits, pauses, and error-based aborts to reduce uncontrolled behavior during experimentation.",
+              },
+              {
+                title: "Treat AI as fallible",
+                description:
+                  "Generated answers must be considered suggestions. A responsible version must make human confirmation mandatory before any submission.",
+              },
+              {
+                title: "Do not hide product risk",
+                description:
+                  "The case clearly distinguishes technical exploration from authorized production use and keeps the terms-of-service warning visible.",
+              },
+            ],
+            architecture: [
+              "Flet interface",
+              "Use cases",
+              "Playwright adapter",
+              "OpenAI adapter",
+              "Local records",
+            ],
+            challenges: [
+              "Respect terms of service and never bypass platform protection mechanisms.",
+              "Protect credentials, résumé content, and other personal data handled by the flow.",
+              "Prevent inaccurate answers or irreversible actions from running without review.",
+            ],
+            validations: [
+              "The public repository documents a Clean Architecture structure.",
+              "Pytest and coverage commands are documented.",
+              "Operational limits and error-based interruption are part of the documentation.",
+              "A legal notice explicitly recognizes potential conflicts with terms of service.",
+            ],
+            outcome:
+              "The outcome is reusable learning about browser-and-AI integration accompanied by a clear risk map. The case does not claim safe production automation; any next version must narrow the scope to assistance with explicit human confirmation.",
+          },
         },
         {
           id: "4",
@@ -1277,6 +1726,8 @@ export const portfolioContent: Record<Locale, PortfolioContent> = {
           githubUrl: "https://github.com/LeandroRochaDosPrazeres/Portf-lio",
           featured: false,
           size: "medium",
+          evidence: "Live application and public source code",
+          demoStatus: "available",
         },
       ],
     },
@@ -1758,8 +2209,31 @@ export const portfolioContent: Record<Locale, PortfolioContent> = {
       sourceLabel: "Código fuente",
       moreLabel: "Ver detalles",
       detailsAriaLabel: "Ver detalles del proyecto",
+      caseLabel: "Explorar caso",
+      caseAriaLabel: "Abrir caso del proyecto",
+      previewLabel: "Vista visual del proyecto",
+      demoStatusLabels: {
+        available: "Demostración pública",
+        authenticated: "Acceso con cuenta",
+        maintenance: "Demostración en mantenimiento",
+      },
       githubCta: "Ver todos los proyectos en GitHub",
       closeLabel: "Cerrar detalles del proyecto",
+      casePage: {
+        backLabel: "Volver a los proyectos",
+        eyebrow: "Caso de proyecto",
+        statusLabel: "Estado actual",
+        problemLabel: "Problema",
+        roleLabel: "Mi papel",
+        responsibilitiesLabel: "Responsabilidades",
+        decisionsLabel: "Decisiones de ingeniería",
+        architectureLabel: "Flujo de la solución",
+        challengesLabel: "Desafíos y límites",
+        validationsLabel: "Evidencias y validaciones",
+        outcomeLabel: "Resultado",
+        linksLabel: "Explorar el proyecto",
+        languageLabel: "Idioma del caso",
+      },
       items: [
         {
           id: "1",
@@ -1778,11 +2252,70 @@ export const portfolioContent: Record<Locale, PortfolioContent> = {
             "Dexie.js",
             "Recharts",
           ],
-          demoUrl: "https://iron-track-teal.vercel.app",
           githubUrl: "https://github.com/LeandroRochaDosPrazeres/IronTrack",
           featured: true,
           size: "medium",
           inDevelopment: true,
+          evidence: "Arquitectura sin conexión documentada",
+          demoStatus: "maintenance",
+          caseStudy: {
+            slug: "irontrack-ultra",
+            summary:
+              "Una PWA centrada en dispositivos móviles que investiga cómo registrar entrenamientos con respuesta inmediata, persistencia local y una evolución segura hacia la sincronización en la nube.",
+            status: "Prototipo funcional en evolución",
+            problem:
+              "Durante un entrenamiento, una conexión inestable no puede interrumpir el registro de series, los tiempos de descanso o el historial. El producto debía priorizar la velocidad en el dispositivo y preparar los datos para autenticación y sincronización futuras.",
+            role:
+              "Concepción del producto, modelado de la experiencia, arquitectura y desarrollo full stack del prototipo.",
+            responsibilities: [
+              "Modelar programas, plantillas de entrenamiento, ejercicios, sesiones y series.",
+              "Diseñar una experiencia móvil con temporizadores e historial.",
+              "Estructurar persistencia local, estado de la interfaz e integración con Supabase.",
+              "Documentar límites, estrategia de pruebas y próximos pasos de sincronización.",
+            ],
+            decisions: [
+              {
+                title: "Escribir primero en el dispositivo",
+                description:
+                  "IndexedDB, mediante Dexie.js, mantiene la escritura disponible sin red y evita bloquear la interfaz durante el entrenamiento.",
+              },
+              {
+                title: "Separar estado y persistencia",
+                description:
+                  "Zustand coordina el estado de uso mientras la capa local conserva los datos, reduciendo el acoplamiento entre pantallas y almacenamiento.",
+              },
+              {
+                title: "Preparar la sincronización asíncrona",
+                description:
+                  "Se modeló una cola de operaciones pendientes para conectar el almacenamiento local con Supabase. La resolución completa de conflictos sigue siendo una evolución explícita.",
+              },
+              {
+                title: "Tratar la PWA como producto móvil",
+                description:
+                  "Service worker, instalación en la pantalla de inicio y componentes táctiles sostienen el uso en el contexto real de entrenamiento.",
+              },
+            ],
+            architecture: [
+              "Interfaz React",
+              "Estado Zustand",
+              "IndexedDB + Dexie",
+              "Cola de sincronización",
+              "Supabase",
+            ],
+            challenges: [
+              "Definir una política de conflictos antes de activar la sincronización bidireccional en producción.",
+              "Mantener temporizadores y acciones rápidas claros en pantallas pequeñas y durante interrupciones.",
+              "Presentar historial y progreso sin atribuir al producto un carácter clínico o prescriptivo.",
+            ],
+            validations: [
+              "Repositorio público con flujo de datos, esquema y estrategia de funcionamiento sin conexión documentados.",
+              "TypeScript estricto y tipos de base generados desde el esquema de Supabase.",
+              "Estrategia documentada de pruebas con Vitest y React Testing Library.",
+              "Configuración PWA y service worker descritos; el despliegue público está temporalmente indisponible.",
+            ],
+            outcome:
+              "El proyecto consolidó una base técnica para sesiones resistentes a la falta de red y visibilizó las decisiones pendientes. Este caso no reivindica usuarios ni métricas de negocio y señala con transparencia que la demostración pública está en mantenimiento.",
+          },
         },
         {
           id: "3",
@@ -1804,6 +2337,66 @@ export const portfolioContent: Record<Locale, PortfolioContent> = {
           githubUrl: "https://github.com/LeandroRochaDosPrazeres/LLControll",
           featured: true,
           size: "medium",
+          evidence: "Aplicación publicada con acceso autenticado",
+          demoStatus: "authenticated",
+          caseStudy: {
+            slug: "llcontrol",
+            summary:
+              "Una PWA que reúne inventario, ventas, tasas y eventos de Mercado Livre en una rutina operacional pensada para dispositivos móviles.",
+            status: "Aplicación publicada con acceso autenticado",
+            problem:
+              "Gestionar productos, ventas y tasas en herramientas separadas genera retrabajo y reduce la visibilidad de cada operación. La propuesta fue centralizar el flujo y preparar actualizaciones provenientes del marketplace.",
+            role:
+              "Concepción del producto, experiencia móvil, modelado de datos y desarrollo full stack de las integraciones.",
+            responsibilities: [
+              "Organizar dashboard, inventario, ventas, historial y ajustes en un único flujo.",
+              "Modelar autenticación, persistencia de datos y almacenamiento de imágenes con Supabase.",
+              "Implementar cálculos configurables de tasas y ganancia por venta.",
+              "Estructurar la recepción de eventos de Mercado Livre mediante webhook.",
+            ],
+            decisions: [
+              {
+                title: "Centralizar la operación",
+                description:
+                  "Productos, ventas, objetivos y tasas comparten el mismo modelo, reduciendo el cambio de contexto en el seguimiento diario.",
+              },
+              {
+                title: "Separar identidad, datos y archivos",
+                description:
+                  "Supabase Auth, PostgreSQL y Storage cubren autenticación, registros operacionales y fotos de productos con responsabilidades claras.",
+              },
+              {
+                title: "Recibir eventos del marketplace",
+                description:
+                  "Una ruta de webhook prepara actualizaciones de inventario, registros de venta y cálculos de resultado desde eventos de pedidos.",
+              },
+              {
+                title: "Priorizar la interacción móvil",
+                description:
+                  "Barra inferior, safe areas, gestos y modales deslizantes acercan la experiencia a una herramienta operacional nativa.",
+              },
+            ],
+            architecture: [
+              "PWA Next.js",
+              "Supabase Auth",
+              "PostgreSQL + Storage",
+              "Webhook Mercado Livre",
+              "Dashboard operacional",
+            ],
+            challenges: [
+              "Mantener confiables los eventos de webhook y evitar efectos duplicados en el inventario.",
+              "Tratar las tasas del marketplace como configuración y no como valores permanentes en el código.",
+              "Demostrar el producto sin exponer datos operacionales o credenciales de una cuenta real.",
+            ],
+            validations: [
+              "Aplicación publicada y protegida por autenticación; la visita pública llega correctamente al login.",
+              "El repositorio público documenta funcionalidades, estructura e integración por webhook.",
+              "La fórmula de tasas y ganancia está documentada con parámetros configurables.",
+              "El manifiesto y la estrategia PWA forman parte de la estructura documentada.",
+            ],
+            outcome:
+              "El proyecto materializó una superficie funcional para centralizar inventario y ventas. El acceso público demuestra el flujo autenticado, pero los datos internos y las métricas de negocio no se exponen ni se reivindican en este caso.",
+          },
         },
         {
           id: "5",
@@ -1816,19 +2409,79 @@ export const portfolioContent: Record<Locale, PortfolioContent> = {
           featured: true,
           size: "medium",
           inDevelopment: true,
+          evidence: "Estudio académico conceptual",
         },
         {
           id: "2",
           title: "BotLink",
           description:
-            "Asistente experimental para organizar información de candidaturas con apoyo de IA y confirmación humana.",
+            "Prototipo educativo sobre IA y automatización de candidaturas, presentado desde su arquitectura, riesgos y límites.",
           longDescription:
-            "Proyecto de estudio que combina automatización del navegador y LLMs para leer contexto, estructurar información y sugerir respuestas en flujos de candidatura. Cualquier envío o acción externa requiere revisión y confirmación del usuario; el foco está en la integración, los límites operativos y el uso responsable de IA.",
+            "Proyecto de estudio que combina automatización del navegador y LLMs para explorar lectura de contexto y estructuración de respuestas. El repositorio original automatiza acciones e incluye un aviso legal; por eso este portafolio lo presenta como experimento educativo, no como solución recomendada para producción. Una evolución responsable debe exigir revisión humana antes de cualquier acción externa.",
           technologies: ["Python", "Playwright", "OpenAI API", "Flet", "Arquitectura Limpia"],
           githubUrl: "https://github.com/LeandroRochaDosPrazeres/BotLink",
           featured: false,
           size: "medium",
           inDevelopment: true,
+          evidence: "IA aplicada con riesgos explicitados",
+          caseStudy: {
+            slug: "botlink",
+            summary:
+              "Un experimento en Python que separa automatización del navegador, integración con LLM e interfaz para estudiar posibilidades y riesgos de flujos de candidatura asistidos por IA.",
+            status: "Prototipo educativo · no recomendado para producción",
+            problem:
+              "Las candidaturas repiten lectura de contexto, datos del currículum y respuestas similares. Automatizar ese flujo resulta atractivo, pero involucra credenciales, datos personales, términos de uso y el riesgo de que una IA actúe incorrectamente en nombre del usuario.",
+            role:
+              "Arquitectura del prototipo, integración técnica entre navegador y LLM y análisis de los límites necesarios para una evolución responsable.",
+            responsibilities: [
+              "Separar reglas de dominio, casos de uso, adaptadores externos e interfaz.",
+              "Integrar Playwright para navegación y OpenAI para interpretar contexto.",
+              "Definir límites operacionales, pausas e interrupción tras errores consecutivos.",
+              "Documentar riesgos legales y requisitos de revisión humana para cualquier evolución.",
+            ],
+            decisions: [
+              {
+                title: "Aislar dependencias externas",
+                description:
+                  "Clean Architecture separa dominio, aplicación, infraestructura y presentación para permitir sustituir el navegador o el proveedor de IA.",
+              },
+              {
+                title: "Limitar la automatización",
+                description:
+                  "El prototipo documenta límites, pausas y abortos por errores para reducir comportamientos descontrolados durante la experimentación.",
+              },
+              {
+                title: "Tratar la IA como falible",
+                description:
+                  "Las respuestas generadas deben considerarse sugerencias. Una versión responsable debe hacer obligatoria la confirmación humana antes de cualquier envío.",
+              },
+              {
+                title: "No ocultar el riesgo del producto",
+                description:
+                  "El caso diferencia con claridad la exploración técnica del uso autorizado en producción y mantiene visible el aviso sobre términos de servicio.",
+              },
+            ],
+            architecture: [
+              "Interfaz Flet",
+              "Casos de uso",
+              "Adaptador Playwright",
+              "Adaptador OpenAI",
+              "Registros locales",
+            ],
+            challenges: [
+              "Respetar términos de uso y no eludir mecanismos de protección de plataformas.",
+              "Proteger credenciales, currículum y otros datos personales procesados por el flujo.",
+              "Impedir que respuestas imprecisas o acciones irreversibles se ejecuten sin revisión.",
+            ],
+            validations: [
+              "Repositorio público con estructura de Clean Architecture documentada.",
+              "Comandos de prueba con pytest y cobertura documentados.",
+              "Límites operacionales e interrupción por errores forman parte de la documentación.",
+              "Un aviso legal reconoce explícitamente posibles conflictos con términos de servicio.",
+            ],
+            outcome:
+              "El resultado es un aprendizaje reutilizable sobre integración entre navegador e IA acompañado de un mapa claro de riesgos. El caso no reivindica automatización segura en producción; cualquier próxima versión debe reducir el alcance a asistencia con confirmación humana explícita.",
+          },
         },
         {
           id: "4",
@@ -1848,6 +2501,8 @@ export const portfolioContent: Record<Locale, PortfolioContent> = {
           githubUrl: "https://github.com/LeandroRochaDosPrazeres/Portf-lio",
           featured: false,
           size: "medium",
+          evidence: "Aplicación en producción y código público",
+          demoStatus: "available",
         },
       ],
     },
@@ -1993,4 +2648,19 @@ export const portfolioContent: Record<Locale, PortfolioContent> = {
 
 export function getPortfolioContent(locale?: Locale | string | null): PortfolioContent {
   return portfolioContent[normalizeLocale(locale)];
+}
+
+export function getProjectBySlug(
+  locale: Locale | string | null | undefined,
+  slug: string,
+): Project | undefined {
+  return getPortfolioContent(locale).projects.items.find(
+    (project) => project.caseStudy?.slug === slug,
+  );
+}
+
+export function getProjectCaseSlugs(): string[] {
+  return portfolioContent.pt.projects.items.flatMap((project) =>
+    project.caseStudy ? [project.caseStudy.slug] : [],
+  );
 }

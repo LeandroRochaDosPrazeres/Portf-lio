@@ -1,9 +1,10 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { ArrowUp, Github, Linkedin, Mail, MapPin, Phone } from "lucide-react";
 import Link from "next/link";
 import { usePortfolio } from "@/components/providers/LocaleProvider";
+import { trackPortfolioEvent } from "@/lib/analytics";
 import { socialLinks } from "@/lib/profile";
 
 const navigationDestinations = new Set([
@@ -14,9 +15,16 @@ const navigationDestinations = new Set([
   "#next-steps",
 ]);
 
+const privacyLabels = {
+  pt: "Privacidade",
+  en: "Privacy",
+  es: "Privacidad",
+} as const;
+
 export function Footer() {
   const { content } = usePortfolio();
   const currentYear = new Date().getFullYear();
+  const shouldReduceMotion = useReducedMotion();
   const { siteConfig, footer, contact } = content;
   const navigationLinks = content.navigation.filter((link) =>
     navigationDestinations.has(link.href),
@@ -26,7 +34,10 @@ export function Footer() {
   );
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({
+      top: 0,
+      behavior: shouldReduceMotion ? "auto" : "smooth",
+    });
   };
 
   return (
@@ -52,6 +63,12 @@ export function Footer() {
                 href={socialLinks.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() =>
+                  trackPortfolioEvent("external_profile_opened", {
+                    profile: "linkedin",
+                    source: "footer",
+                  })
+                }
                 whileHover={{ scale: 1.1, y: -2 }}
                 whileTap={{ scale: 0.95 }}
                 className="w-10 h-10 rounded-lg bg-background border border-border flex items-center justify-center hover:border-primary hover:text-primary transition-all"
@@ -63,6 +80,12 @@ export function Footer() {
                 href={socialLinks.github}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() =>
+                  trackPortfolioEvent("external_profile_opened", {
+                    profile: "github",
+                    source: "footer",
+                  })
+                }
                 whileHover={{ scale: 1.1, y: -2 }}
                 whileTap={{ scale: 0.95 }}
                 className="w-10 h-10 rounded-lg bg-background border border-border flex items-center justify-center hover:border-primary hover:text-primary transition-all"
@@ -151,17 +174,26 @@ export function Footer() {
               © {currentYear} {siteConfig.name}. {footer.rights}
             </p>
 
-            <motion.button
-              type="button"
-              onClick={scrollToTop}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
-              aria-label={footer.backToTopAriaLabel}
-            >
-              {footer.backToTop}
-              <ArrowUp className="w-4 h-4" aria-hidden="true" />
-            </motion.button>
+            <div className="flex items-center gap-5">
+              <Link
+                href={`/${content.locale}/privacy`}
+                className="focus-ring rounded text-sm text-muted-foreground transition-colors hover:text-primary"
+              >
+                {privacyLabels[content.locale]}
+              </Link>
+
+              <motion.button
+                type="button"
+                onClick={scrollToTop}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+                aria-label={footer.backToTopAriaLabel}
+              >
+                {footer.backToTop}
+                <ArrowUp className="w-4 h-4" aria-hidden="true" />
+              </motion.button>
+            </div>
           </div>
         </div>
       </div>

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { notFound } from "next/navigation";
 import { LocaleProvider } from "@/components/providers/LocaleProvider";
+import { Observability } from "@/components/providers/Observability";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { getPortfolioContent } from "@/lib/data";
 import { socialLinks } from "@/lib/profile";
@@ -17,12 +18,12 @@ import "../globals.css";
 const inter = localFont({
   src: [
     {
-      path: "../../../public/fonts/Inter-Regular.ttf",
+      path: "../../../public/fonts/Inter-Regular-latin.woff2",
       weight: "400",
       style: "normal",
     },
     {
-      path: "../../../public/fonts/Inter-SemiBold.ttf",
+      path: "../../../public/fonts/Inter-SemiBold-latin.woff2",
       weight: "600",
       style: "normal",
     },
@@ -184,6 +185,7 @@ export default async function LocaleLayout({
             {children}
           </LocaleProvider>
         </ThemeProvider>
+        <Observability />
       </body>
     </html>
   );

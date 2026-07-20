@@ -79,7 +79,7 @@ export function NextSteps() {
                   </div>
                   <span
                     className={cn(
-                      "px-2.5 py-1 rounded-full text-[10px] font-semibold border whitespace-nowrap shrink-0",
+                      "shrink-0 whitespace-nowrap rounded-full border px-2.5 py-1 text-xs font-semibold",
                       status.color,
                     )}
                   >
@@ -102,14 +102,14 @@ export function NextSteps() {
 
                 {/* Focus Tags */}
                 <div className="mt-auto">
-                  <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2 font-semibold">
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
                     {nextSteps.focusLabel}
                   </p>
                   <div className="flex flex-wrap gap-1.5">
                     {item.focus.map((tech) => (
                       <span
                         key={tech}
-                        className="px-2.5 py-1 rounded-full text-[11px] font-medium bg-primary/10 text-primary border border-primary/20"
+                        className="rounded-full border border-primary/20 bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary"
                       >
                         {tech}
                       </span>
