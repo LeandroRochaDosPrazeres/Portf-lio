@@ -75,7 +75,7 @@ function TimelineCard({
       />
 
       <motion.article
-        className="glass group flex-1 overflow-hidden rounded-2xl transition-all duration-300 hover:border-primary/50"
+        className="glass group flex-1 overflow-hidden rounded-2xl transition-colors duration-300 hover:border-primary/50"
         whileHover={{ scale: 1.02 }}
       >
         <button

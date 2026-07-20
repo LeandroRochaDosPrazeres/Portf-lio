@@ -58,7 +58,7 @@ export function NextSteps() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.4, delay: index * 0.1 }}
-                className="glass rounded-2xl p-6 flex flex-col gap-5 border border-border/40 hover:border-primary/40 transition-all group"
+                className="glass rounded-2xl p-6 flex flex-col gap-5 border border-border/40 hover:border-primary/40 transition-colors group"
               >
                 {/* Header: Step number + Title + Status */}
                 <div className="flex items-start justify-between gap-2">

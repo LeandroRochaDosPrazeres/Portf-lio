@@ -38,7 +38,7 @@ export function Education() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="glass rounded-3xl p-8 border border-border/50 hover:border-primary/40 transition-all"
+              className="glass rounded-3xl p-8 border border-border/50 hover:border-primary/40 transition-colors"
             >
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center text-white">

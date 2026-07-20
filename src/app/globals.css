@@ -431,12 +431,6 @@ body {
   will-change: transform;
 }
 
-/* content-visibility for below-fold sections — skip rendering when off-screen */
-section:not(#hero) {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 600px;
-}
-
 /* Reduce motion for users who prefer it */
 @media (prefers-reduced-motion: reduce) {
   html {

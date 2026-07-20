@@ -15,7 +15,11 @@ export default function Home() {
   return (
     <>
       <Header />
-      <main id="main-content" tabIndex={-1} className="relative">
+      <main
+        id="main-content"
+        tabIndex={-1}
+        className="relative overflow-x-clip"
+      >
         <Hero />
         <About />
         <Education />

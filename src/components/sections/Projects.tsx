@@ -397,7 +397,7 @@ function ProjectCard({
         viewport={{ once: true, margin: "-50px" }}
         transition={{ duration: 0.5, delay: index * 0.1 }}
         className={cn(
-          "glass group relative flex min-h-[500px] flex-col overflow-hidden rounded-2xl transition-all duration-500 hover:border-primary/50",
+          "glass group relative flex min-h-[500px] flex-col overflow-hidden rounded-2xl transition-colors duration-500 hover:border-primary/50",
           sizeClasses[project.size],
         )}
         whileHover={{ y: -5 }}
