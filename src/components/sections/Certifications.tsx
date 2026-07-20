@@ -1,46 +1,122 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import {
+  type RefObject,
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+} from "react";
 import { createPortal } from "react-dom";
 import { motion } from "framer-motion";
-import { certifications, CertificationItem } from "@/lib/data";
-import { BadgeCheck, X, Eye } from "lucide-react";
+import { BadgeCheck, Eye, X } from "lucide-react";
+import { usePortfolio } from "@/components/providers/LocaleProvider";
+
+type CertificationItem = ReturnType<
+  typeof usePortfolio
+>["content"]["certifications"]["items"][number];
+type CertificationsCopy = ReturnType<
+  typeof usePortfolio
+>["content"]["certifications"];
+
+const focusableSelector = [
+  "a[href]",
+  "button:not([disabled])",
+  "input:not([disabled])",
+  "select:not([disabled])",
+  "textarea:not([disabled])",
+  '[tabindex]:not([tabindex="-1"])',
+].join(",");
+
+function getFocusableElements(container: HTMLElement) {
+  return Array.from(
+    container.querySelectorAll<HTMLElement>(focusableSelector),
+  ).filter(
+    (element) =>
+      element.getAttribute("aria-hidden") !== "true" &&
+      !element.hasAttribute("hidden"),
+  );
+}
 
 function CertificateModal({
   cert,
+  copy,
   onClose,
+  returnFocusRef,
 }: {
   cert: CertificationItem;
+  copy: CertificationsCopy;
   onClose: () => void;
+  returnFocusRef: RefObject<HTMLButtonElement | null>;
 }) {
   const [imgLoaded, setImgLoaded] = useState(false);
   const [imgError, setImgError] = useState(false);
   const [visible, setVisible] = useState(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const generatedId = useId();
+  const titleId = `certificate-title-${generatedId}`;
 
   useEffect(() => {
-    requestAnimationFrame(() => setVisible(true));
-    closeButtonRef.current?.focus();
+    const frame = requestAnimationFrame(() => {
+      setVisible(true);
+      closeButtonRef.current?.focus();
+    });
+
+    return () => cancelAnimationFrame(frame);
   }, []);
 
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    },
-    [onClose],
-  );
-
   useEffect(() => {
-    document.addEventListener("keydown", handleKeyDown);
-    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    const returnFocusElement = returnFocusRef.current;
+    const previousOverflow = document.body.style.overflow;
+    const previousPaddingRight = document.body.style.paddingRight;
+    const scrollbarWidth =
+      window.innerWidth - document.documentElement.clientWidth;
+
     document.body.style.overflow = "hidden";
     document.body.style.paddingRight = `${scrollbarWidth}px`;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        onClose();
+        return;
+      }
+
+      if (event.key !== "Tab" || !dialogRef.current) return;
+
+      const focusableElements = getFocusableElements(dialogRef.current);
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements.at(-1);
+
+      if (!firstElement || !lastElement) {
+        event.preventDefault();
+        dialogRef.current.focus();
+        return;
+      }
+
+      if (event.shiftKey && document.activeElement === firstElement) {
+        event.preventDefault();
+        lastElement.focus();
+      } else if (!event.shiftKey && document.activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus();
+      } else if (!dialogRef.current.contains(document.activeElement)) {
+        event.preventDefault();
+        firstElement.focus();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "";
-      document.body.style.paddingRight = "";
+      document.body.style.overflow = previousOverflow;
+      document.body.style.paddingRight = previousPaddingRight;
+      requestAnimationFrame(() => returnFocusElement?.focus());
     };
-  }, [handleKeyDown]);
+  }, [onClose, returnFocusRef]);
 
   return (
     <div
@@ -51,30 +127,39 @@ function CertificateModal({
       }}
     >
       <div
-        className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-3xl shadow-2xl transition-all duration-300"
+        ref={dialogRef}
+        className="relative max-h-[90vh] w-full max-w-3xl overflow-y-auto overscroll-contain rounded-3xl shadow-2xl transition-all duration-300"
         style={{
           backgroundColor: "var(--card)",
-          transform: visible ? "scale(1) translateY(0)" : "scale(0.95) translateY(16px)",
+          transform: visible
+            ? "scale(1) translateY(0)"
+            : "scale(0.95) translateY(16px)",
           opacity: visible ? 1 : 0,
         }}
         role="dialog"
         aria-modal="true"
-        aria-label={`Certificado: ${cert.title}`}
+        aria-labelledby={titleId}
+        tabIndex={-1}
       >
-        {/* Header */}
         <div
-          className="sticky top-0 z-10 flex items-center justify-between p-5 border-b rounded-t-3xl"
+          className="sticky top-0 z-10 flex items-center justify-between rounded-t-3xl border-b p-5"
           style={{
             backgroundColor: "var(--card)",
             borderColor: "var(--border)",
           }}
         >
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center text-white shrink-0">
-              <BadgeCheck className="w-4 h-4" />
+          <div className="flex min-w-0 items-center gap-3">
+            <div
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary via-secondary to-accent text-white"
+              aria-hidden="true"
+            >
+              <BadgeCheck className="h-4 w-4" />
             </div>
             <div className="min-w-0">
-              <h3 className="text-base font-bold text-foreground leading-tight truncate">
+              <h3
+                id={titleId}
+                className="truncate text-base font-bold leading-tight text-foreground"
+              >
                 {cert.title}
               </h3>
               <p className="text-xs text-muted-foreground">
@@ -85,40 +170,37 @@ function CertificateModal({
 
           <button
             ref={closeButtonRef}
-            onClick={(e) => {
-              e.stopPropagation();
-              onClose();
-            }}
-            className="w-9 h-9 rounded-full border flex items-center justify-center hover:text-primary transition-colors shrink-0 ml-3"
+            type="button"
+            onClick={onClose}
+            className="focus-ring ml-3 flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition-colors hover:text-primary"
             style={{
               backgroundColor: "var(--background)",
               borderColor: "var(--border)",
             }}
-            aria-label="Fechar"
+            aria-label={copy.closeLabel}
           >
-            <X className="w-4 h-4" />
+            <X className="h-4 w-4" aria-hidden="true" />
           </button>
         </div>
 
-        {/* Certificate Image */}
         {cert.certificateUrl && (
           <div className="w-full" style={{ backgroundColor: "var(--background)" }}>
             {!imgLoaded && !imgError && (
-              <div className="w-full h-64 flex items-center justify-center">
-                <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+              <div className="flex h-64 w-full items-center justify-center" aria-hidden="true">
+                <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
               </div>
             )}
 
             {imgError && (
-              <div className="w-full h-48 flex flex-col items-center justify-center gap-2 text-muted-foreground">
-                <p className="text-sm">Não foi possível carregar a imagem</p>
+              <div className="flex h-48 w-full flex-col items-center justify-center gap-2 text-muted-foreground">
+                <p className="text-sm">{copy.imageErrorLabel}</p>
                 <a
                   href={cert.certificateUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-primary underline"
+                  className="focus-ring text-sm text-primary underline"
                 >
-                  Abrir imagem diretamente
+                  {copy.openImageLabel}
                 </a>
               </div>
             )}
@@ -126,8 +208,8 @@ function CertificateModal({
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={cert.certificateUrl}
-              alt={`Certificado: ${cert.title}`}
-              className="block w-full h-auto rounded-b-3xl"
+              alt={`${copy.certificateAriaLabel}: ${cert.title}`}
+              className="block h-auto w-full rounded-b-3xl"
               style={{ display: imgLoaded ? "block" : "none" }}
               onLoad={() => setImgLoaded(true)}
               onError={() => setImgError(true)}
@@ -139,8 +221,55 @@ function CertificateModal({
   );
 }
 
+function CertificationCardContent({
+  cert,
+}: {
+  cert: CertificationItem;
+}) {
+  return (
+    <>
+      <div className="mb-4 flex items-center gap-4">
+        <div
+          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary via-secondary to-accent text-white"
+          aria-hidden="true"
+        >
+          <BadgeCheck className="h-6 w-6" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-sm text-muted-foreground">{cert.year}</p>
+          <h3 className="text-xl font-semibold leading-tight text-foreground transition-colors group-hover:text-primary">
+            {cert.title}
+          </h3>
+          <p className="text-muted-foreground">{cert.institution}</p>
+        </div>
+      </div>
+
+      <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
+        {cert.description}
+      </p>
+
+      <div className="flex flex-wrap gap-2">
+        {cert.skills.map((skill) => (
+          <span
+            key={skill}
+            className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary"
+          >
+            {skill}
+          </span>
+        ))}
+      </div>
+    </>
+  );
+}
+
 export function Certifications() {
-  const [selectedCert, setSelectedCert] = useState<CertificationItem | null>(null);
+  const { content } = usePortfolio();
+  const copy = content.certifications;
+  const [selectedCert, setSelectedCert] = useState<CertificationItem | null>(
+    null,
+  );
+  const activeTriggerRef = useRef<HTMLButtonElement>(null);
+  const closeModal = useCallback(() => setSelectedCert(null), []);
 
   return (
     <section id="certifications" className="py-24">
@@ -150,87 +279,54 @@ export function Certifications() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center max-w-2xl mx-auto mb-16"
+          className="mx-auto mb-16 max-w-2xl text-center"
         >
-          <p className="text-sm uppercase tracking-[0.3em] text-muted-foreground mb-3">
-            Certificações
+          <p className="mb-3 text-sm uppercase tracking-[0.3em] text-muted-foreground">
+            {copy.eyebrow}
           </p>
-          <h2 className="text-3xl sm:text-4xl font-bold">
-            Conquistas que <span className="gradient-text">validam</span> minha evolução
+          <h2 className="text-3xl font-bold sm:text-4xl">
+            {copy.title} <span className="gradient-text">{copy.titleAccent}</span>
           </h2>
-          <p className="text-muted-foreground mt-4">
-            Cursos e certificações que comprovam minha base técnica e compromisso com aprendizado contínuo.
-          </p>
+          <p className="mt-4 text-muted-foreground">{copy.introduction}</p>
         </motion.div>
 
         <div className="grid gap-6 md:grid-cols-2">
-          {certifications.map((cert, index) => (
-            <motion.div
+          {copy.items.map((cert, index) => (
+            <motion.article
               key={cert.id}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.4, delay: index * 0.1 }}
-              className="glass rounded-2xl p-6 border border-border/40 hover:border-primary/40 transition-all cursor-pointer group"
-              onClick={() => cert.certificateUrl && setSelectedCert(cert)}
-              onKeyDown={(e) => {
-                if ((e.key === "Enter" || e.key === " ") && cert.certificateUrl) {
-                  e.preventDefault();
-                  setSelectedCert(cert);
-                }
-              }}
-              role={cert.certificateUrl ? "button" : undefined}
-              tabIndex={cert.certificateUrl ? 0 : undefined}
-              aria-label={
-                cert.certificateUrl
-                  ? `Ver certificado: ${cert.title}`
-                  : undefined
-              }
+              className="glass group rounded-2xl border border-border/40 p-6 transition-all hover:border-primary/40"
             >
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center text-white">
-                  <BadgeCheck className="w-6 h-6" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm text-muted-foreground">{cert.year}</p>
-                  <h3 className="text-xl font-semibold text-foreground leading-tight group-hover:text-primary transition-colors">
-                    {cert.title}
-                  </h3>
-                  <p className="text-muted-foreground">{cert.institution}</p>
-                </div>
-                {cert.certificateUrl && (
-                  <div
-                    className="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0"
-                    title="Ver certificado"
-                  >
-                    <Eye className="w-3.5 h-3.5 text-primary" />
-                  </div>
-                )}
-              </div>
-
-              <p className="text-muted-foreground text-sm leading-relaxed mb-4">{cert.description}</p>
-
-              <div className="flex flex-wrap gap-2">
-                {cert.skills.map((skill) => (
-                  <span
-                    key={skill}
-                    className="px-3 py-1 text-xs font-medium rounded-full bg-primary/10 text-primary"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </motion.div>
+              <CertificationCardContent cert={cert} />
+              {cert.certificateUrl && (
+                <button
+                  type="button"
+                  className="focus-ring mt-5 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary transition-colors hover:border-primary/50 hover:bg-primary/15"
+                  onClick={(event) => {
+                    activeTriggerRef.current = event.currentTarget;
+                    setSelectedCert(cert);
+                  }}
+                  aria-label={`${copy.viewLabel}: ${cert.title}`}
+                >
+                  <Eye className="h-4 w-4" aria-hidden="true" />
+                  {copy.viewLabel}
+                </button>
+              )}
+            </motion.article>
           ))}
         </div>
       </div>
 
-      {/* Modal via Portal — renderiza fora da section */}
       {selectedCert &&
         createPortal(
           <CertificateModal
             cert={selectedCert}
-            onClose={() => setSelectedCert(null)}
+            copy={copy}
+            onClose={closeModal}
+            returnFocusRef={activeTriggerRef}
           />,
           document.body,
         )}

@@ -6,14 +6,55 @@ import { forwardRef, ReactNode, useRef, useCallback } from "react";
 
 interface ButtonProps extends Omit<HTMLMotionProps<"button">, "children"> {
   children: ReactNode;
-  variant?: "primary" | "secondary" | "ghost" | "outline";
-  size?: "sm" | "md" | "lg";
+  variant?: ButtonVariant;
+  size?: ButtonSize;
   magnetic?: boolean;
   icon?: ReactNode;
   iconPosition?: "left" | "right";
 }
 
+export type ButtonVariant = "primary" | "secondary" | "ghost" | "outline";
+export type ButtonSize = "sm" | "md" | "lg";
+
+interface ButtonVariantsOptions {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  magnetic?: boolean;
+  className?: string;
+}
+
 const springConfig = { stiffness: 150, damping: 15 };
+
+const variantClasses: Record<ButtonVariant, string> = {
+  primary:
+    "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25",
+  secondary:
+    "bg-secondary text-white hover:bg-secondary/90 shadow-lg shadow-secondary/25",
+  ghost: "bg-transparent hover:bg-card text-foreground",
+  outline:
+    "border-2 border-border bg-transparent hover:bg-card text-foreground hover:border-primary",
+};
+
+const sizeClasses: Record<ButtonSize, string> = {
+  sm: "px-4 py-2 text-sm",
+  md: "px-6 py-3 text-base",
+  lg: "px-8 py-4 text-lg",
+};
+
+export function buttonVariants({
+  variant = "primary",
+  size = "md",
+  magnetic = false,
+  className,
+}: ButtonVariantsOptions = {}) {
+  return cn(
+    "relative inline-flex items-center justify-center gap-2 rounded-full font-medium transition-all duration-300 focus-ring disabled:cursor-not-allowed disabled:opacity-50",
+    variantClasses[variant],
+    sizeClasses[size],
+    magnetic && "magnetic-btn",
+    className,
+  );
+}
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
@@ -50,32 +91,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       motionY.set(0);
     }, [motionX, motionY]);
 
-    const variants = {
-      primary:
-        "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25",
-      secondary:
-        "bg-secondary text-white hover:bg-secondary/90 shadow-lg shadow-secondary/25",
-      ghost: "bg-transparent hover:bg-card text-foreground",
-      outline:
-        "border-2 border-border bg-transparent hover:bg-card text-foreground hover:border-primary",
-    };
-
-    const sizes = {
-      sm: "px-4 py-2 text-sm",
-      md: "px-6 py-3 text-base",
-      lg: "px-8 py-4 text-lg",
-    };
-
     return (
       <motion.button
         ref={magnetic ? buttonRef : ref}
-        className={cn(
-          "relative inline-flex items-center justify-center gap-2 rounded-full font-medium transition-all duration-300 focus-ring disabled:opacity-50 disabled:cursor-not-allowed",
-          variants[variant],
-          sizes[size],
-          magnetic && "magnetic-btn",
-          className
-        )}
+        className={buttonVariants({ variant, size, magnetic, className })}
         style={magnetic ? { x: springX, y: springY } : undefined}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}

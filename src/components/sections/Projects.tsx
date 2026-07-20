@@ -1,113 +1,221 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ExternalLink, Github, X, Smartphone, Bot, BarChart3, Briefcase, ChevronRight } from "lucide-react";
-import { projectsData, Project } from "@/lib/data";
+import {
+  type RefObject,
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+} from "react";
+import { createPortal } from "react-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  BarChart3,
+  Bot,
+  Briefcase,
+  ChevronRight,
+  ExternalLink,
+  Github,
+  House,
+  Smartphone,
+  X,
+} from "lucide-react";
+import { usePortfolio } from "@/components/providers/LocaleProvider";
 import { cn } from "@/lib/utils";
 
-// Ícones customizados para cada projeto
+type ProjectItem = ReturnType<
+  typeof usePortfolio
+>["content"]["projects"]["items"][number];
+type ProjectsCopy = ReturnType<typeof usePortfolio>["content"]["projects"];
+
 const projectIcons: Record<string, React.ElementType> = {
-  "1": Smartphone, // IronTrack
-  "2": Bot,        // BotLink
-  "3": BarChart3,  // LLControl
-  "4": Briefcase,  // Portfolio
+  "1": Smartphone,
+  "2": Bot,
+  "3": BarChart3,
+  "4": Briefcase,
+  "5": House,
 };
 
-// Gradientes únicos para cada projeto
 const projectGradients: Record<string, string> = {
   "1": "from-emerald-500 via-teal-500 to-cyan-500",
   "2": "from-violet-500 via-purple-500 to-fuchsia-500",
   "3": "from-orange-500 via-amber-500 to-yellow-500",
   "4": "from-blue-500 via-indigo-500 to-violet-500",
+  "5": "from-cyan-500 via-sky-500 to-blue-500",
 };
 
-function ProjectModal({ project, onClose }: { project: Project; onClose: () => void }) {
+const focusableSelector = [
+  "a[href]",
+  "button:not([disabled])",
+  "input:not([disabled])",
+  "select:not([disabled])",
+  "textarea:not([disabled])",
+  '[tabindex]:not([tabindex="-1"])',
+].join(",");
+
+function getFocusableElements(container: HTMLElement) {
+  return Array.from(
+    container.querySelectorAll<HTMLElement>(focusableSelector),
+  ).filter(
+    (element) =>
+      element.getAttribute("aria-hidden") !== "true" &&
+      !element.hasAttribute("hidden"),
+  );
+}
+
+function ProjectModal({
+  project,
+  copy,
+  onClose,
+  returnFocusRef,
+}: {
+  project: ProjectItem;
+  copy: ProjectsCopy;
+  onClose: () => void;
+  returnFocusRef: RefObject<HTMLButtonElement | null>;
+}) {
   const Icon = projectIcons[project.id] || Briefcase;
   const gradient = projectGradients[project.id] || "from-primary to-secondary";
-
-  // Close on Escape key
-  const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (e.key === "Escape") onClose();
-  }, [onClose]);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const generatedId = useId();
+  const titleId = `project-title-${generatedId}`;
+  const descriptionId = `project-description-${generatedId}`;
 
   useEffect(() => {
-    document.addEventListener("keydown", handleKeyDown);
+    const returnFocusElement = returnFocusRef.current;
+    const previousOverflow = document.body.style.overflow;
+    const previousPaddingRight = document.body.style.paddingRight;
+    const scrollbarWidth =
+      window.innerWidth - document.documentElement.clientWidth;
+
     document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "unset";
+    document.body.style.paddingRight = `${scrollbarWidth}px`;
+
+    const focusFrame = requestAnimationFrame(() => {
+      closeButtonRef.current?.focus();
+    });
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        onClose();
+        return;
+      }
+
+      if (event.key !== "Tab" || !dialogRef.current) return;
+
+      const focusableElements = getFocusableElements(dialogRef.current);
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements.at(-1);
+
+      if (!firstElement || !lastElement) {
+        event.preventDefault();
+        dialogRef.current.focus();
+        return;
+      }
+
+      if (event.shiftKey && document.activeElement === firstElement) {
+        event.preventDefault();
+        lastElement.focus();
+      } else if (!event.shiftKey && document.activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus();
+      } else if (!dialogRef.current.contains(document.activeElement)) {
+        event.preventDefault();
+        firstElement.focus();
+      }
     };
-  }, [handleKeyDown]);
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      cancelAnimationFrame(focusFrame);
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = previousOverflow;
+      document.body.style.paddingRight = previousPaddingRight;
+      requestAnimationFrame(() => returnFocusElement?.focus());
+    };
+  }, [onClose, returnFocusRef]);
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-md"
-      onClick={onClose}
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-background/80 p-4 backdrop-blur-md"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
     >
       <motion.div
+        ref={dialogRef}
         initial={{ scale: 0.9, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.9, opacity: 0, y: 20 }}
         transition={{ type: "spring", damping: 25, stiffness: 300 }}
-        className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto glass rounded-3xl p-0"
-        onClick={(e) => e.stopPropagation()}
+        className="glass relative max-h-[90vh] w-full max-w-2xl overflow-y-auto overscroll-contain rounded-3xl p-0"
         role="dialog"
         aria-modal="true"
-        aria-label={`Detalhes do projeto ${project.title}`}
+        aria-labelledby={titleId}
+        aria-describedby={descriptionId}
+        tabIndex={-1}
       >
-        {/* Header com gradiente */}
-        <div className={cn("relative h-32 bg-gradient-to-r rounded-t-3xl", gradient)}>
-          <div className="absolute inset-0 bg-black/20" />
+        <div className={cn("relative h-32 rounded-t-3xl bg-gradient-to-r", gradient)}>
+          <div className="absolute inset-0 bg-black/20" aria-hidden="true" />
           <div className="absolute -bottom-8 left-6">
-            <div className="w-16 h-16 rounded-2xl bg-card border-4 border-card flex items-center justify-center shadow-xl">
-              <Icon className="w-8 h-8 text-foreground" />
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl border-4 border-card bg-card shadow-xl">
+              <Icon className="h-8 w-8 text-foreground" aria-hidden="true" />
             </div>
           </div>
           <button
+            ref={closeButtonRef}
+            type="button"
             onClick={onClose}
-            className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/50 transition-colors"
+            className="focus-ring absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-black/30 text-white backdrop-blur-sm transition-colors hover:bg-black/50"
+            aria-label={copy.closeLabel}
           >
-            <X className="w-5 h-5" />
+            <X className="h-5 w-5" aria-hidden="true" />
           </button>
         </div>
 
-        {/* Conteúdo */}
         <div className="p-6 pt-12">
-          <div className="flex items-center gap-3 mb-2">
-            <h3 className="text-2xl font-bold text-foreground">{project.title}</h3>
+          <div className="mb-2 flex flex-wrap items-center gap-3">
+            <h3 id={titleId} className="text-2xl font-bold text-foreground">
+              {project.title}
+            </h3>
             {project.inDevelopment && (
-              <span className="px-3 py-1 text-xs font-semibold rounded-full bg-amber-500/20 text-amber-500 border border-amber-500/30">
-                🚧 Em Desenvolvimento
+              <span className="rounded-full border border-amber-500/30 bg-amber-500/20 px-3 py-1 text-xs font-semibold text-amber-500">
+                <span aria-hidden="true">🚧 </span>
+                {copy.inDevelopmentLabel}
               </span>
             )}
           </div>
-          
-          <p className="text-muted-foreground leading-relaxed mb-6">
+
+          <p
+            id={descriptionId}
+            className="mb-6 leading-relaxed text-muted-foreground"
+          >
             {project.longDescription || project.description}
           </p>
 
-          {/* Technologies */}
           <div className="mb-6">
-            <h4 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-3">
-              Stack Tecnológica
+            <h4 className="mb-3 text-sm font-semibold uppercase tracking-wider text-foreground">
+              {copy.stackLabel}
             </h4>
             <div className="flex flex-wrap gap-2">
-              {project.technologies.map((tech) => (
+              {project.technologies.map((technology) => (
                 <span
-                  key={tech}
-                  className="px-3 py-1.5 text-sm font-medium rounded-full bg-primary/10 text-primary border border-primary/20"
+                  key={technology}
+                  className="rounded-full border border-primary/20 bg-primary/10 px-3 py-1.5 text-sm font-medium text-primary"
                 >
-                  {tech}
+                  {technology}
                 </span>
               ))}
             </div>
           </div>
 
-          {/* Actions */}
           <div className="flex flex-wrap gap-3">
             {project.demoUrl && (
               <a
@@ -115,13 +223,13 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
                 target="_blank"
                 rel="noopener noreferrer"
                 className={cn(
-                  "flex items-center gap-2 px-5 py-2.5 rounded-full text-white font-medium",
-                  "bg-gradient-to-r transition-all duration-300 hover:scale-105 hover:shadow-lg",
-                  gradient
+                  "focus-ring flex items-center gap-2 rounded-full bg-gradient-to-r px-5 py-2.5 font-medium text-white transition-all duration-300 hover:scale-105 hover:shadow-lg",
+                  gradient,
                 )}
+                aria-label={`${copy.demoLabel}: ${project.title}`}
               >
-                <ExternalLink className="w-4 h-4" />
-                Ver Demo
+                <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                {copy.demoLabel}
               </a>
             )}
             {project.githubUrl && (
@@ -129,10 +237,11 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
                 href={project.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-5 py-2.5 bg-card border border-border rounded-full text-foreground font-medium hover:border-primary hover:text-primary transition-all duration-300"
+                className="focus-ring flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 font-medium text-foreground transition-all duration-300 hover:border-primary hover:text-primary"
+                aria-label={`${copy.sourceLabel}: ${project.title}`}
               >
-                <Github className="w-4 h-4" />
-                Código Fonte
+                <Github className="h-4 w-4" aria-hidden="true" />
+                {copy.sourceLabel}
               </a>
             )}
           </div>
@@ -142,15 +251,25 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
   );
 }
 
-function ProjectCard({ project, index }: { project: Project; index: number }) {
+function ProjectCard({
+  project,
+  index,
+  copy,
+}: {
+  project: ProjectItem;
+  index: number;
+  copy: ProjectsCopy;
+}) {
   const [showModal, setShowModal] = useState(false);
+  const detailsButtonRef = useRef<HTMLButtonElement>(null);
   const Icon = projectIcons[project.id] || Briefcase;
   const gradient = projectGradients[project.id] || "from-primary to-secondary";
+  const closeModal = useCallback(() => setShowModal(false), []);
 
   const sizeClasses = {
     small: "col-span-1 row-span-1",
-    medium: "col-span-1 md:col-span-1 row-span-1",
-    large: "col-span-1 md:col-span-2 row-span-1",
+    medium: "col-span-1 row-span-1 md:col-span-1",
+    large: "col-span-1 row-span-1 md:col-span-2",
   };
 
   return (
@@ -161,106 +280,91 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
         viewport={{ once: true, margin: "-50px" }}
         transition={{ duration: 0.5, delay: index * 0.1 }}
         className={cn(
-          "group relative glass rounded-2xl overflow-hidden cursor-pointer",
+          "glass group relative min-h-[320px] overflow-hidden rounded-2xl transition-all duration-500 hover:border-primary/50",
           sizeClasses[project.size],
-          "hover:border-primary/50 transition-all duration-500",
-          "min-h-[320px]"
         )}
-        onClick={() => setShowModal(true)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            setShowModal(true);
-          }
-        }}
-        tabIndex={0}
-        role="button"
-        aria-label={`Ver detalhes do projeto ${project.title}`}
         whileHover={{ y: -5 }}
       >
-        {/* Background Gradient */}
-        <div className={cn(
-          "absolute inset-0 opacity-10 bg-gradient-to-br transition-opacity duration-500",
-          gradient,
-          "group-hover:opacity-20"
-        )} />
+        <div
+          className={cn(
+            "absolute inset-0 bg-gradient-to-br opacity-10 transition-opacity duration-500 group-hover:opacity-20",
+            gradient,
+          )}
+          aria-hidden="true"
+        />
 
-        {/* Animated Background Pattern */}
         <div className="absolute inset-0 opacity-5" aria-hidden="true">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-primary to-transparent rounded-full blur-xl transform translate-x-1/2 -translate-y-1/2" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-secondary to-transparent rounded-full blur-xl transform -translate-x-1/2 translate-y-1/2" />
+          <div className="absolute right-0 top-0 h-64 w-64 translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br from-primary to-transparent blur-xl" />
+          <div className="absolute bottom-0 left-0 h-64 w-64 -translate-x-1/2 translate-y-1/2 rounded-full bg-gradient-to-tr from-secondary to-transparent blur-xl" />
         </div>
 
-        {/* Content */}
-        <div className="relative h-full p-6 flex flex-col">
-          {/* Header */}
-          <div className="flex items-start justify-between mb-4">
-            <motion.div
+        <div className="relative flex h-full flex-col p-6">
+          <div className="mb-4 flex items-start justify-between">
+            <div
               className={cn(
-                "w-14 h-14 rounded-2xl bg-gradient-to-br flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:rotate-[5deg]",
-                gradient
+                "flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br shadow-lg transition-transform duration-300 group-hover:rotate-[5deg]",
+                gradient,
               )}
+              aria-hidden="true"
             >
-              <Icon className="w-7 h-7 text-white" />
-            </motion.div>
+              <Icon className="h-7 w-7 text-white" />
+            </div>
 
-            {/* Badges */}
-            <div className="flex flex-col gap-2 items-end">
+            <div className="flex flex-col items-end gap-2">
               {project.inDevelopment && (
-                <span className="px-3 py-1 text-xs font-semibold rounded-full bg-amber-500/20 text-amber-500 border border-amber-500/30">
-                  🚧 Em Desenvolvimento
+                <span className="rounded-full border border-amber-500/30 bg-amber-500/20 px-3 py-1 text-xs font-semibold text-amber-500">
+                  <span aria-hidden="true">🚧 </span>
+                  {copy.inDevelopmentLabel}
                 </span>
               )}
               {project.featured && (
-                <span className="px-3 py-1 text-xs font-semibold rounded-full bg-primary/20 text-primary border border-primary/30">
-                  ⭐ Destaque
+                <span className="rounded-full border border-primary/30 bg-primary/20 px-3 py-1 text-xs font-semibold text-primary">
+                  <span aria-hidden="true">★ </span>
+                  {copy.featuredLabel}
                 </span>
               )}
             </div>
           </div>
 
-          {/* Title & Description */}
           <div className="flex-1">
-            <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+            <h3 className="mb-2 text-xl font-bold text-foreground transition-colors group-hover:text-primary">
               {project.title}
             </h3>
-            <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
+            <p className="line-clamp-3 text-sm leading-relaxed text-muted-foreground">
               {project.description}
             </p>
           </div>
 
-          {/* Technologies Preview */}
-          <div className="mt-4 mb-4">
+          <div className="mb-4 mt-4">
             <div className="flex flex-wrap gap-2">
-              {project.technologies.slice(0, 4).map((tech) => (
+              {project.technologies.slice(0, 4).map((technology) => (
                 <span
-                  key={tech}
-                  className="px-2.5 py-1 text-xs font-medium bg-card/80 border border-border rounded-full text-muted-foreground"
+                  key={technology}
+                  className="rounded-full border border-border bg-card/80 px-2.5 py-1 text-xs font-medium text-muted-foreground"
                 >
-                  {tech}
+                  {technology}
                 </span>
               ))}
               {project.technologies.length > 4 && (
-                <span className="px-2.5 py-1 text-xs font-medium bg-primary/10 border border-primary/30 rounded-full text-primary">
+                <span className="rounded-full border border-primary/30 bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
                   +{project.technologies.length - 4}
                 </span>
               )}
             </div>
           </div>
 
-          {/* Footer Actions */}
-          <div className="flex items-center justify-between pt-4 border-t border-border/50">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border/50 pt-4">
             <div className="flex items-center gap-2">
               {project.demoUrl && (
                 <a
                   href={project.demoUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={(e) => e.stopPropagation()}
-                  className="w-9 h-9 rounded-full bg-card border border-border flex items-center justify-center hover:border-primary hover:text-primary transition-colors"
-                  title="Ver Demo"
+                  className="focus-ring flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card transition-colors hover:border-primary hover:text-primary"
+                  aria-label={`${copy.demoLabel}: ${project.title}`}
+                  title={copy.demoLabel}
                 >
-                  <ExternalLink className="w-4 h-4" />
+                  <ExternalLink className="h-4 w-4" aria-hidden="true" />
                 </a>
               )}
               {project.githubUrl && (
@@ -268,94 +372,123 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
                   href={project.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={(e) => e.stopPropagation()}
-                  className="w-9 h-9 rounded-full bg-card border border-border flex items-center justify-center hover:border-primary hover:text-primary transition-colors"
-                  title="Ver Código"
+                  className="focus-ring flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card transition-colors hover:border-primary hover:text-primary"
+                  aria-label={`${copy.sourceLabel}: ${project.title}`}
+                  title={copy.sourceLabel}
                 >
-                  <Github className="w-4 h-4" />
+                  <Github className="h-4 w-4" aria-hidden="true" />
                 </a>
               )}
             </div>
 
-            <div
-              className="flex items-center gap-1 text-sm font-medium text-primary transition-transform duration-300 group-hover:translate-x-1"
+            <button
+              ref={detailsButtonRef}
+              type="button"
+              onClick={() => setShowModal(true)}
+              className="focus-ring flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium text-primary transition-transform duration-300 hover:translate-x-1"
+              aria-label={`${copy.detailsAriaLabel}: ${project.title}`}
             >
-              <span>Ver mais</span>
-              <ChevronRight className="w-4 h-4" />
-            </div>
+              <span>{copy.moreLabel}</span>
+              <ChevronRight className="h-4 w-4" aria-hidden="true" />
+            </button>
           </div>
         </div>
 
-        {/* Hover Glow Effect — CSS only */}
         <div
           className={cn(
-            "absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-[0.05] transition-opacity duration-500 pointer-events-none",
-            "bg-gradient-to-r",
-            gradient
+            "pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-r opacity-0 transition-opacity duration-500 group-hover:opacity-[0.05]",
+            gradient,
           )}
+          aria-hidden="true"
         />
       </motion.article>
 
-      {/* Modal */}
-      <AnimatePresence>
-        {showModal && (
-          <ProjectModal project={project} onClose={() => setShowModal(false)} />
+      {showModal &&
+        createPortal(
+          <AnimatePresence>
+            <ProjectModal
+              project={project}
+              copy={copy}
+              onClose={closeModal}
+              returnFocusRef={detailsButtonRef}
+            />
+          </AnimatePresence>,
+          document.body,
         )}
-      </AnimatePresence>
     </>
   );
 }
 
 export function Projects() {
+  const { content } = usePortfolio();
+  const copy = content.projects;
+  const technologiesCount = new Set(
+    copy.items.flatMap((project) => project.technologies),
+  ).size;
+
+  const stats = [
+    { label: copy.stats.projects, value: copy.items.length, icon: "📦" },
+    {
+      label: copy.stats.technologies,
+      value: `${technologiesCount}+`,
+      icon: "⚡",
+    },
+    {
+      label: copy.stats.featured,
+      value: copy.items.filter((project) => project.featured).length,
+      icon: "★",
+    },
+    {
+      label: copy.stats.inDevelopment,
+      value: copy.items.filter((project) => project.inDevelopment).length,
+      icon: "🚧",
+    },
+  ];
+
   return (
-    <section id="projects" className="py-24 relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-        <div className="absolute top-1/4 -left-32 w-96 h-96 bg-primary/5 rounded-full blur-xl" />
-        <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-secondary/5 rounded-full blur-xl" />
+    <section id="projects" className="relative overflow-hidden py-24">
+      <div
+        className="pointer-events-none absolute inset-0 overflow-hidden"
+        aria-hidden="true"
+      >
+        <div className="absolute -left-32 top-1/4 h-96 w-96 rounded-full bg-primary/5 blur-xl" />
+        <div className="absolute -right-32 bottom-1/4 h-96 w-96 rounded-full bg-secondary/5 blur-xl" />
       </div>
 
-      <div className="container mx-auto px-4 relative z-10">
-        {/* Section Header */}
+      <div className="container relative z-10 mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-16"
+          className="mb-16 text-center"
         >
           <motion.span
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="inline-block px-4 py-1.5 mb-4 text-sm font-medium rounded-full bg-primary/10 text-primary border border-primary/20"
+            className="mb-4 inline-block rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary"
           >
-            🚀 Meus Projetos
+            <span aria-hidden="true">🚀 </span>
+            {copy.eyebrow}
           </motion.span>
-          
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
-            Projetos em <span className="gradient-text">Destaque</span>
+
+          <h2 className="mb-4 text-3xl font-bold sm:text-4xl md:text-5xl">
+            {copy.title} <span className="gradient-text">{copy.titleAccent}</span>
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Uma seleção dos projetos que mais me orgulho. Cada um representa um desafio único, 
-            desde PWAs de alta performance até sistemas de automação com IA.
+          <p className="mx-auto max-w-2xl text-muted-foreground">
+            {copy.introduction}
           </p>
         </motion.div>
 
-        {/* Stats Bar */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12"
+          className="mb-12 grid grid-cols-2 gap-4 md:grid-cols-4"
         >
-          {[
-            { label: "Projetos", value: projectsData.length, icon: "📦" },
-            { label: "Tecnologias", value: `${new Set(projectsData.flatMap(p => p.technologies)).size}+`, icon: "⚡" },
-            { label: "Em Destaque", value: projectsData.filter(p => p.featured).length, icon: "⭐" },
-            { label: "Em Desenvolvimento", value: projectsData.filter(p => p.inDevelopment).length, icon: "🚧" },
-          ].map((stat, index) => (
+          {stats.map((stat, index) => (
             <motion.div
               key={stat.label}
               initial={{ opacity: 0, scale: 0.9 }}
@@ -364,21 +497,30 @@ export function Projects() {
               transition={{ delay: index * 0.1 }}
               className="glass rounded-xl p-4 text-center"
             >
-              <span className="text-2xl mb-1 block">{stat.icon}</span>
-              <span className="text-2xl font-bold text-foreground">{stat.value}</span>
-              <span className="text-sm text-muted-foreground block">{stat.label}</span>
+              <span className="mb-1 block text-2xl" aria-hidden="true">
+                {stat.icon}
+              </span>
+              <span className="text-2xl font-bold text-foreground">
+                {stat.value}
+              </span>
+              <span className="block text-sm text-muted-foreground">
+                {stat.label}
+              </span>
             </motion.div>
           ))}
         </motion.div>
 
-        {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {projectsData.map((project, index) => (
-            <ProjectCard key={project.id} project={project} index={index} />
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          {copy.items.map((project, index) => (
+            <ProjectCard
+              key={project.id}
+              project={project}
+              index={index}
+              copy={copy}
+            />
           ))}
         </div>
 
-        {/* GitHub CTA */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -390,11 +532,14 @@ export function Projects() {
             href="https://github.com/LeandroRochaDosPrazeres"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 px-6 py-3 glass rounded-full text-foreground font-medium hover:border-primary transition-all duration-300 group"
+            className="focus-ring glass group inline-flex items-center gap-3 rounded-full px-6 py-3 font-medium text-foreground transition-all duration-300 hover:border-primary"
           >
-            <Github className="w-5 h-5" />
-            <span>Ver todos os projetos no GitHub</span>
-            <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            <Github className="h-5 w-5" aria-hidden="true" />
+            <span>{copy.githubCta}</span>
+            <ChevronRight
+              className="h-4 w-4 transition-transform group-hover:translate-x-1"
+              aria-hidden="true"
+            />
           </a>
         </motion.div>
       </div>

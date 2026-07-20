@@ -1,137 +1,104 @@
-# PRD - Portfólio Pessoal: "Trajetória & Impacto"
+# PRD — Portfólio Profissional Leandro Rocha
 
-| Metadado | Detalhes |
-| :--- | :--- |
-| **Projeto** | Web Portfólio Pessoal |
-| **Versão** | 1.0.0 |
-| **Status** | Especificação de Requisitos |
-| **Plataforma** | Web (Responsivo / Mobile-First) |
-| **Data** | 04 de Dezembro de 2025 |
+| Campo | Valor |
+| --- | --- |
+| Produto | Portfólio profissional multilíngue |
+| Versão | 2.0 |
+| Atualização | 20 de julho de 2026 |
+| Stack | Next.js, React, TypeScript e Tailwind CSS |
+| Status | Implementação e validação |
 
----
+## 1. Visão
 
-## 1. Visão do Produto
-Criar uma aplicação web que transcenda o formato de currículo tradicional. O objetivo é apresentar a **trajetória pessoal e profissional** do usuário através de uma experiência narrativa imersiva. O site deve atuar como a peça central de *branding* pessoal, validando competência técnica através da própria execução do projeto e convertendo visitantes em oportunidades (contratação ou parcerias).
+Transformar o portfólio na principal prova pública do posicionamento profissional de Leandro Rocha: Engenharia de Software, desenvolvimento Full Stack, IA aplicada e AWS/DevOps.
 
-### 1.1. Princípios de Design (North Star)
-* **"Show, Don't Just Tell":** Usar interações e visuais para demonstrar habilidades, não apenas texto.
-* **Performance é Funcionalidade:** O site deve carregar instantaneamente. Animações não podem travar o scroll.
-* **Narrativa Cronológica:** A história deve fluir de onde você veio para onde você está indo.
-* **Estética "Future-Proof":** Design minimalista, tipografia ousada e uso inteligente de espaço negativo.
+O produto deve permitir que recrutadores, líderes técnicos e potenciais parceiros entendam rapidamente:
 
----
+- o que Leandro entrega;
+- como ele aplica IA com responsabilidade e revisão humana;
+- quais experiências e credenciais sustentam o posicionamento;
+- quais projetos demonstram capacidade técnica e visão de produto;
+- como entrar em contato.
 
-## 2. Público-Alvo e User Personas
-1.  **O Recrutador Técnico:** Tem pouco tempo. Quer ver a Stack, baixar o CV resumido e verificar o GitHub rapidamente.
-2.  **O Hiring Manager / Cliente:** Busca "fit" cultural, capacidade de resolver problemas e qualidade visual dos projetos entregues.
-3.  **Peers (Outros Devs/Designers):** Visitam para inspiração. Se impressionados, compartilham o portfólio, gerando tráfego orgânico.
+## 2. Princípios
 
----
+1. **Clareza antes do efeito visual:** cada interação deve apoiar a leitura e a conversão.
+2. **Prova antes de promessa:** projetos, experiências e certificações devem aparecer antes do roadmap futuro.
+3. **IA como amplificador:** o texto deve mostrar investigação, desenho de solução, documentação e automação, preservando validação humana.
+4. **Uma marca, três idiomas:** português, inglês e espanhol devem oferecer a mesma profundidade de conteúdo.
+5. **Qualidade operacional:** performance, acessibilidade, segurança e SEO fazem parte do produto.
 
-## 3. Conceito Visual & UX (Diferenciais)
+## 3. Público
 
-> **Estilo Visual Proposto:** *Bento Grid & Glassmorphism*
-> Uma organização em grades modulares (como widgets da Apple ou Linear.app) combinada com efeitos de vidro fosco e gradientes sutis.
+- Recrutadores técnicos com pouco tempo para avaliar aderência.
+- Engineering Managers e Tech Leads interessados em execução e maturidade técnica.
+- Clientes ou parceiros buscando desenvolvimento de produtos digitais e automação.
+- Profissionais de tecnologia interessados nos projetos e na trajetória.
 
-* **Tipografia:** Sans-serif geométrica moderna (Ex: *Inter*, *Satoshi* ou *Space Grotesk*) para passar modernidade.
-* **Tema:** Dark Mode como padrão (pela elegância), com um *toggle* fluido para Light Mode.
-* **Motion Design:**
-    * **Scroll Reveal:** Elementos aparecem suavemente conforme o usuário desce a página.
-    * **Micro-interações:** Botões reagem magneticamente ao cursor; links têm sublinhados animados.
-    * **Noise Texture:** Uma textura de granulação sutil no fundo para dar um aspecto "premium/físico" e menos digital estéril.
+## 4. Jornada principal
 
----
+1. Hero comunica posicionamento e direciona para projetos ou CV.
+2. Sobre explica método de trabalho e uso responsável de IA.
+3. Projetos mostram aplicação prática.
+4. Experiência e stack sustentam capacidade de execução.
+5. Certificações e formação validam repertório.
+6. Roadmap demonstra direção sem competir com provas atuais.
+7. Contato converte o interesse em conversa.
 
-## 4. Requisitos Funcionais (Features)
+## 5. Requisitos funcionais
 
-### 4.1. Header & Navegação
-- [ ] Logotipo minimalista (iniciais ou ícone abstrato).
-- [ ] Menu de navegação que se esconde ao rolar para baixo e reaparece ao rolar para cima.
-- [ ] Botão de alternância de Tema (Sol/Lua) com animação SVG.
-- [ ] Indicador de progresso de leitura no topo da página.
+| Requisito | Status |
+| --- | --- |
+| Rotas `/pt`, `/en` e `/es` | Implementado |
+| Tradução integral da interface e do conteúdo | Implementado |
+| Seletor de idioma persistente | Implementado |
+| Tema claro/escuro | Implementado |
+| Menu responsivo e progresso de leitura | Implementado |
+| Hero com CTAs para projetos e CV | Implementado |
+| Seção Sobre e princípios de engenharia | Implementado |
+| Timeline interativa de experiências | Implementado |
+| Projetos com detalhes, demo e repositório quando disponíveis | Implementado |
+| Stack, formação, certificações e roadmap | Implementado |
+| Currículo PDF por idioma | Implementado |
+| Contato por WhatsApp e canais diretos | Implementado |
+| SEO localizado, sitemap, robots, Open Graph e JSON-LD | Implementado |
+| Evidências visuais próprias para cada projeto | Próxima evolução |
+| Analytics com definição de privacidade e eventos | A avaliar |
 
-### 4.2. Hero Section (A Primeira Impressão)
-- [ ] **Headline:** Frase de impacto grande (H1). Ex: *"Engenharia com Propósito. Design com Alma."*
-- [ ] **Sub-headline:** Breve resumo (quem sou, o que faço).
-- [ ] **Visual Key:** Um elemento 3D interativo (Spline) ou um Avatar animado (Memoji ou foto profissional com fundo dinâmico).
-- [ ] **Status:** Um pequeno "badge" pulsante indicando disponibilidade. Ex: 🟢 *Disponível para Freelance*.
-- [ ] **CTA:** Botões "Ver Projetos" e "Baixar CV".
+## 6. Requisitos de qualidade
 
-### 4.3. Timeline da Trajetória (O Core)
-- [ ] Layout de linha do tempo vertical conectando pontos.
-- [ ] **Logica Híbrida:** Misturar marcos profissionais (Cargos) com marcos de aprendizado (Cursos/Certificações) e marcos pessoais relevantes.
-- [ ] **Interatividade:** Ao clicar em um marco, expandir para mostrar detalhes (stack usada, conquistas, lições aprendidas).
+- Navegação completa por teclado e foco visível.
+- Sem controles interativos aninhados.
+- Respeito a `prefers-reduced-motion`.
+- Contraste compatível com WCAG AA para textos essenciais.
+- Imagem principal otimizada e entregue por `next/image`.
+- Nenhuma vulnerabilidade conhecida em dependências de produção.
+- `lint`, `typecheck` e `build` executados antes do deploy.
+- Layout sem rolagem horizontal nos breakpoints principais.
 
-### 4.4. Showcase de Projetos (Bento Grid)
-- [ ] Cards de tamanhos variados organizados em grid.
-- [ ] **Hover Preview:** Ao passar o mouse, a imagem estática do projeto vira um vídeo curto (autoplay mudo) mostrando o software em uso.
-- [ ] Tags de tecnologias utilizadas em cada card.
-- [ ] Links diretos para: *Live Demo* e *Repositório GitHub*.
+## 7. Conteúdo obrigatório
 
-### 4.5. "O Que Eu Uso" (Tech Stack & Tools)
-- [ ] Carrossel infinito (Marquee) com ícones das tecnologias.
-- [ ] Seção "Setup": Lista de hardware/software que utilizo (VS Code theme, Terminal, Equipamento), pois gera curiosidade técnica.
+- Título profissional alinhado ao LinkedIn.
+- Experiências Alest, Dexco e Prefeitura com datas e responsabilidades precisas.
+- Projetos IronTrack Ultra, LLControl, Smart Grid House, BotLink e Portfólio.
+- Stack com TypeScript, React, Next.js, Python, APIs, SQL, AWS, DevOps, LLMs e automação.
+- Certificações AWS DevOps Professional, AWS Developer Associate, Salesforce Agentforce e Notion Admin.
+- Formação em Engenharia da Computação na Universidade São Judas Tadeu.
 
-### 4.6. Rodapé e Contato
-- [ ] Formulário de contato funcional (sem redirect).
-- [ ] Links sociais grandes (LinkedIn, GitHub, Twitter/X, Instagram).
-- [ ] Botão "Vamos tomar um café?" que leva direto ao WhatsApp ou Calendly.
-- [ ] Copyright dinâmico (atualiza o ano automaticamente).
+## 8. Critérios de aceite
 
----
+- As três rotas exibem toda a página no idioma correspondente.
+- O idioma do documento, metadata e currículo acompanha a rota selecionada.
+- Todos os links internos, externos e downloads respondem corretamente.
+- O Hero permanece legível em mobile e desktop.
+- Menu, timelines, cards e modais podem ser usados por teclado.
+- Recursos declarados em metadata e manifest não retornam 404.
+- O repositório não contém artefatos de build versionados.
+- A validação automatizada termina sem erros.
 
-## 5. Arquitetura Técnica
+## 9. Próximas evoluções
 
-Para garantir que o portfólio seja **rápido, escalável e moderno**, a seguinte stack é mandatória:
-
-| Componente | Tecnologia | Motivo |
-| :--- | :--- | :--- |
-| **Core** | **Next.js 14+ (App Router)** | Renderização híbrida (SSR/SSG), SEO otimizado e rotas rápidas. |
-| **Linguagem** | **TypeScript** | Segurança de tipos e facilidade de manutenção. |
-| **Estilos** | **Tailwind CSS** | Produtividade, design system consistente e bundle size pequeno. |
-| **Animações** | **Framer Motion** | Padrão da indústria para animações complexas e gestos em React. |
-| **Ícones** | **Lucide React** | Ícones leves, consistentes e modernos. |
-| **Emails** | **Resend** ou **EmailJS** | Para envio de formulários sem backend complexo. |
-| **CMS** | **Sanity.io** (Opcional) | Para gerenciar textos e projetos sem editar código. |
-| **Hospedagem** | **Vercel** | Integração nativa com Next.js e CDN global (Edge Network). |
-
----
-
-## 6. Requisitos Não-Funcionais (QoS)
-
-1.  **Lighthouse Score:** Deve atingir 90+ em Performance, Acessibilidade, Melhores Práticas e SEO.
-2.  **Responsividade Extrema:** O layout *Bento Grid* deve se reorganizar elegantemente em mobile (stack vertical).
-3.  **SEO Técnico:** Implementação correta de Meta Tags, Open Graph (imagem que aparece ao compartilhar o link) e sitemap.xml.
-4.  **Acessibilidade (a11y):** Navegação completa por teclado e contraste de cores adequado (WCAG AA).
-
----
-
-## 7. Roadmap de Implementação
-
-### Fase 1: Fundação (Semana 1)
-- [ ] Setup do Repositório e Next.js.
-- [ ] Configuração do Tailwind e Design System (Cores, Fontes).
-- [ ] Criação dos Componentes Base (Botões, Cards, Container).
-
-### Fase 2: Estrutura e Conteúdo (Semana 2)
-- [ ] Desenvolvimento da Hero Section.
-- [ ] Desenvolvimento do componente Timeline.
-- [ ] Desenvolvimento do Grid de Projetos.
-- [ ] Redação dos textos (Copywriting).
-
-### Fase 3: Refinamento e "Wow Factor" (Semana 3)
-- [ ] Implementação das animações com Framer Motion (Entrance, Hover, Scroll).
-- [ ] Adição do modo Dark/Light.
-- [ ] Testes de responsividade e ajustes finos.
-
-### Fase 4: Launch (Semana 4)
-- [ ] Configuração de SEO e Analytics.
-- [ ] Deploy na Vercel.
-- [ ] Divulgação no LinkedIn.
-
----
-
-## 8. Definição de Sucesso (KPIs)
-* Tempo médio de permanência na página > 45 segundos.
-* Click-through rate (CTR) nos projetos > 20%.
-* Feedback qualitativo positivo sobre o design e fluidez.
+1. Capturar screenshots reais e escrever estudos de caso com problema, decisão e resultado.
+2. Adicionar testes de fluxo para idioma, modais, navegação e geração de CV.
+3. Medir Core Web Vitals em produção e corrigir regressões com dados reais.
+4. Avaliar domínio próprio e analytics somente após definir privacidade e eventos úteis.

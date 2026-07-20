@@ -4,9 +4,11 @@ import { useTheme } from "next-themes";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sun, Moon } from "lucide-react";
 import { useEffect, useState } from "react";
+import { usePortfolio } from "@/components/providers/LocaleProvider";
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
+  const { content } = usePortfolio();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -16,7 +18,12 @@ export function ThemeToggle() {
 
   if (!mounted) {
     return (
-      <button className="w-10 h-10 rounded-full bg-card flex items-center justify-center">
+      <button
+        type="button"
+        className="w-10 h-10 rounded-full bg-card flex items-center justify-center"
+        aria-label={content.header.themeLabel}
+        disabled
+      >
         <div className="w-5 h-5" />
       </button>
     );
@@ -26,11 +33,16 @@ export function ThemeToggle() {
 
   return (
     <motion.button
+      type="button"
       onClick={() => setTheme(isDark ? "light" : "dark")}
       className="relative w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center overflow-hidden focus-ring"
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
-      aria-label={isDark ? "Ativar modo claro" : "Ativar modo escuro"}
+      aria-label={
+        isDark
+          ? content.header.lightThemeLabel
+          : content.header.darkThemeLabel
+      }
     >
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
