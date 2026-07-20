@@ -1,34 +1,29 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { nextSteps } from "@/lib/data";
 import { cn } from "@/lib/utils";
-import { CalendarRange, PlaneTakeoff, BookOpenCheck, Rocket, Target } from "lucide-react";
+import { CalendarRange, BookOpenCheck } from "lucide-react";
+import { usePortfolio } from "@/components/providers/LocaleProvider";
+import type { NextStepStatus } from "@/lib/data";
 
 const statusConfig = {
   estudando: {
-    label: "Estudando",
     color: "bg-primary/10 text-primary border-primary/30",
     icon: BookOpenCheck,
   },
   planejado: {
-    label: "Planejado",
     color: "bg-secondary/10 text-secondary border-secondary/30",
     icon: CalendarRange,
   },
-  pesquisando: {
-    label: "Pesquisando",
-    color: "bg-accent/10 text-accent border-accent/30",
-    icon: PlaneTakeoff,
-  },
-  "objetivo futuro": {
-    label: "Objetivo Futuro",
-    color: "bg-amber-500/10 text-amber-500 border-amber-500/30",
-    icon: Target,
-  },
-} as const;
+} as const satisfies Record<
+  NextStepStatus,
+  { color: string; icon: typeof BookOpenCheck }
+>;
 
 export function NextSteps() {
+  const { content } = usePortfolio();
+  const { nextSteps } = content;
+
   return (
     <section id="next-steps" className="py-24">
       <div className="container mx-auto px-4">
@@ -40,19 +35,19 @@ export function NextSteps() {
           className="text-center max-w-3xl mx-auto mb-16"
         >
           <p className="text-sm uppercase tracking-[0.3em] text-muted-foreground mb-3">
-            Próximos Passos
+            {nextSteps.eyebrow}
           </p>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold">
-            Roadmap de <span className="gradient-text">evolução contínua</span>
+            {nextSteps.title}{" "}
+            <span className="gradient-text">{nextSteps.titleAccent}</span>
           </h2>
           <p className="text-muted-foreground mt-4 max-w-2xl mx-auto">
-            Certificações e formações estratégicas planejadas para evoluir de Desenvolvedor Full Stack
-            para uma liderança técnica completa em DevOps, Segurança e Gestão.
+            {nextSteps.introduction}
           </p>
         </motion.div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {nextSteps.map((item, index) => {
+          {nextSteps.items.map((item, index) => {
             const status = statusConfig[item.status];
             const StatusIcon = status.icon;
 
@@ -75,7 +70,7 @@ export function NextSteps() {
                     </div>
                     <div className="min-w-0">
                       <p className="text-xs text-muted-foreground uppercase tracking-widest">
-                        Etapa {index + 1}
+                        {nextSteps.stepLabel} {index + 1}
                       </p>
                       <h3 className="text-base font-bold text-foreground leading-tight">
                         {item.title}
@@ -89,8 +84,8 @@ export function NextSteps() {
                     )}
                   >
                     <span className="inline-flex items-center gap-1">
-                      <StatusIcon className="w-3 h-3" />
-                      {status.label}
+                      <StatusIcon className="w-3 h-3" aria-hidden="true" />
+                      {nextSteps.statusLabels[item.status]}
                     </span>
                   </span>
                 </div>
@@ -108,7 +103,7 @@ export function NextSteps() {
                 {/* Focus Tags */}
                 <div className="mt-auto">
                   <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2 font-semibold">
-                    Foco
+                    {nextSteps.focusLabel}
                   </p>
                   <div className="flex flex-wrap gap-1.5">
                     {item.focus.map((tech) => (

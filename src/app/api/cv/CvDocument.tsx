@@ -1,14 +1,6 @@
 import React from "react";
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
-import {
-  siteConfig,
-  timelineData,
-  projectsData,
-  educationItems,
-  certifications,
-  techStack,
-  languages,
-} from "@/lib/data";
+import type { PortfolioContent } from "@/lib/data";
 
 // Cores do tema
 const colors = {
@@ -116,6 +108,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 2,
   },
+  experienceRole: {
+    width: "68%",
+    paddingRight: 6,
+  },
   experienceTitle: {
     fontFamily: "Helvetica-Bold",
     fontSize: 10,
@@ -127,6 +123,8 @@ const styles = StyleSheet.create({
     fontFamily: "Helvetica-Bold",
   },
   experienceDate: {
+    width: "32%",
+    textAlign: "right",
     fontSize: 8,
     color: colors.gray,
   },
@@ -237,9 +235,29 @@ const styles = StyleSheet.create({
   },
 });
 
-const CvDocument: React.FC = () => (
-  <Document title={`Currículo - ${siteConfig.name}`} author={siteConfig.name}>
-    <Page size="A4" style={styles.page}>
+interface CvDocumentProps {
+  content: PortfolioContent;
+}
+
+const CvDocument: React.FC<CvDocumentProps> = ({ content }) => {
+  const {
+    siteConfig,
+    timeline,
+    projects,
+    education,
+    certifications,
+    stack,
+    cv,
+  } = content;
+
+  return (
+    <Document
+      title={cv.documentTitle}
+      author={siteConfig.name}
+      subject={content.metadata.description}
+      keywords={content.metadata.keywords.join(", ")}
+    >
+      <Page size="A4" style={styles.page} wrap={false}>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.name}>{siteConfig.name}</Text>
@@ -259,19 +277,17 @@ const CvDocument: React.FC = () => (
         <View style={styles.mainColumn}>
           {/* Perfil */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Perfil Profissional</Text>
-            <Text style={styles.summary}>
-              Estudante de Engenharia da Computação com interesse em programação, desenvolvimento de software e inteligência artificial. Comprometido em aprender continuamente através de projetos práticos, cursos extracurriculares e orientação de profissionais experientes. Objetivo: aplicar conhecimentos para melhorar processos e gerar soluções eficientes.
-            </Text>
+            <Text style={styles.sectionTitle}>{cv.profileTitle}</Text>
+            <Text style={styles.summary}>{cv.professionalSummary}</Text>
           </View>
 
           {/* Experiência */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Experiência Profissional</Text>
-            {timelineData.map((item) => (
+            <Text style={styles.sectionTitle}>{cv.experienceTitle}</Text>
+            {timeline.items.map((item) => (
               <View key={item.id} style={styles.experienceItem}>
                 <View style={styles.experienceHeader}>
-                  <View>
+                  <View style={styles.experienceRole}>
                     <Text style={styles.experienceTitle}>{item.title}</Text>
                     <Text style={styles.experienceCompany}>{item.subtitle}</Text>
                   </View>
@@ -287,8 +303,8 @@ const CvDocument: React.FC = () => (
 
           {/* Projetos */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Projetos em Destaque</Text>
-            {projectsData
+            <Text style={styles.sectionTitle}>{cv.projectsTitle}</Text>
+            {projects.items
               .filter((p) => p.featured)
               .slice(0, 3)
               .map((project) => (
@@ -305,8 +321,8 @@ const CvDocument: React.FC = () => (
         <View style={styles.sidebar}>
           {/* Formação */}
           <View style={styles.section}>
-            <Text style={styles.sidebarSectionTitle}>Formação Acadêmica</Text>
-            {educationItems.map((edu) => (
+            <Text style={styles.sidebarSectionTitle}>{cv.educationTitle}</Text>
+            {education.items.map((edu) => (
               <View key={edu.id} style={styles.educationItem}>
                 <Text style={styles.educationCourse}>{edu.course}</Text>
                 <Text style={styles.educationInstitution}>{edu.institution}</Text>
@@ -317,8 +333,8 @@ const CvDocument: React.FC = () => (
 
           {/* Habilidades */}
           <View style={styles.section}>
-            <Text style={styles.sidebarSectionTitle}>Habilidades</Text>
-            {techStack.slice(0, 4).map((category) => (
+            <Text style={styles.sidebarSectionTitle}>{cv.skillsTitle}</Text>
+            {stack.categories.slice(0, 4).map((category) => (
               <View key={category.name} style={styles.skillCategory}>
                 <Text style={styles.skillCategoryName}>{category.name}</Text>
                 <View style={styles.skillTags}>
@@ -332,8 +348,8 @@ const CvDocument: React.FC = () => (
 
           {/* Certificações */}
           <View style={styles.section}>
-            <Text style={styles.sidebarSectionTitle}>Certificações</Text>
-            {certifications.slice(0, 4).map((cert) => (
+            <Text style={styles.sidebarSectionTitle}>{cv.certificationsTitle}</Text>
+            {certifications.items.slice(0, 5).map((cert) => (
               <View key={cert.id} style={styles.certItem}>
                 <Text style={styles.certTitle}>{cert.title}</Text>
                 <Text style={styles.certDetails}>
@@ -345,8 +361,8 @@ const CvDocument: React.FC = () => (
 
           {/* Idiomas */}
           <View style={styles.section}>
-            <Text style={styles.sidebarSectionTitle}>Idiomas</Text>
-            {languages.map((lang) => (
+            <Text style={styles.sidebarSectionTitle}>{cv.languagesTitle}</Text>
+            {stack.languages.map((lang) => (
               <View key={lang.name} style={styles.languageRow}>
                 <Text style={styles.languageName}>{lang.name}</Text>
                 <Text style={styles.languageLevel}>{lang.level}</Text>
@@ -355,8 +371,9 @@ const CvDocument: React.FC = () => (
           </View>
         </View>
       </View>
-    </Page>
-  </Document>
-);
+      </Page>
+    </Document>
+  );
+};
 
 export default CvDocument;

@@ -1,10 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { educationItems } from "@/lib/data";
 import { GraduationCap } from "lucide-react";
+import { usePortfolio } from "@/components/providers/LocaleProvider";
 
 export function Education() {
+  const { content } = usePortfolio();
+  const { education } = content;
+
   return (
     <section id="education" className="py-24">
       <div className="container mx-auto px-4">
@@ -16,18 +19,19 @@ export function Education() {
           className="text-center max-w-2xl mx-auto mb-16"
         >
           <p className="text-sm uppercase tracking-[0.3em] text-muted-foreground mb-3">
-            Formação Acadêmica
+            {education.eyebrow}
           </p>
           <h2 className="text-3xl sm:text-4xl font-bold">
-            Bases que sustentam minha <span className="gradient-text">trajetória</span>
+            {education.title}{" "}
+            <span className="gradient-text">{education.titleAccent}</span>
           </h2>
           <p className="text-muted-foreground mt-4">
-            Estudos em andamento que reforçam meu compromisso com engenharia de software e tecnologia.
+            {education.introduction}
           </p>
         </motion.div>
 
         <div className="max-w-3xl mx-auto space-y-8">
-          {educationItems.map((item, index) => (
+          {education.items.map((item, index) => (
             <motion.div
               key={item.id}
               initial={{ opacity: 0, y: 30 }}
@@ -38,7 +42,7 @@ export function Education() {
             >
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center text-white">
-                  <GraduationCap className="w-6 h-6" />
+                  <GraduationCap className="w-6 h-6" aria-hidden="true" />
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">{item.period}</p>
@@ -51,7 +55,7 @@ export function Education() {
 
               <div>
                 <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-3">
-                  Principais Focos
+                  {education.focusLabel}
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {item.focus.map((focus) => (

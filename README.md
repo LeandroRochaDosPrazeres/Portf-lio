@@ -1,150 +1,104 @@
-# 🚀 Trajetória & Impacto - Portfólio Pessoal
+# Leandro Rocha — Portfólio
 
-Um portfólio profissional moderno construído com Next.js 14+, TypeScript, Tailwind CSS e Framer Motion.
+Portfólio profissional multilíngue de Leandro Rocha, construído para apresentar sua atuação em Engenharia de Software, desenvolvimento Full Stack, Inteligência Artificial aplicada e AWS/DevOps.
 
-## ✨ Features
+## O que o projeto entrega
 
-- **Design Moderno**: Bento Grid, Glassmorphism e animações fluidas
-- **Dark/Light Mode**: Toggle de tema com transição suave
-- **Responsivo**: Layout adaptável para todos os dispositivos
-- **Performance**: Otimizado para Lighthouse 90+
-- **SEO**: Meta tags, Open Graph e sitemap configurados
-- **Acessibilidade**: WCAG AA compliant
+- Conteúdo integral em português, inglês e espanhol, com rotas próprias (`/pt`, `/en` e `/es`).
+- Posicionamento profissional, experiências, projetos, stack, formação, roadmap e certificações centralizados em uma única fonte de dados.
+- Currículo em PDF gerado sob demanda e localizado conforme o idioma selecionado.
+- Tema escuro e claro, animações com preferência de movimento reduzido e navegação responsiva.
+- Metadados por idioma, canonical, `hreflang`, sitemap, robots, Open Graph dinâmico e dados estruturados de `Person`.
+- Contato por e-mail, telefone, LinkedIn, GitHub e WhatsApp.
 
-## 🛠️ Tech Stack
+## Stack
 
-- **Framework**: Next.js 14+ (App Router)
-- **Linguagem**: TypeScript
-- **Estilos**: Tailwind CSS
-- **Animações**: Framer Motion
-- **Ícones**: Lucide React
-- **Tema**: next-themes
+- Next.js 16.2
+- React 19
+- TypeScript 5.9
+- Tailwind CSS 4
+- Framer Motion
+- React PDF
+- next-themes
+- Lucide React
 
-## 🚀 Como Usar
+## Requisitos
 
-### 1. Instalar dependências
+- Node.js 20.9 ou superior
+- npm
 
-```bash
-npm install
-```
+O projeto inclui `.nvmrc` para facilitar o uso da versão LTS recomendada.
 
-### 2. Personalizar seus dados
-
-Edite o arquivo `src/lib/data.ts` com suas informações:
-
-```typescript
-export const siteConfig = {
-  name: "Seu Nome",
-  title: "Seu Título",
-  headline: "Sua Frase de Impacto",
-  // ... demais configurações
-};
-```
-
-### 3. Rodar em desenvolvimento
+## Desenvolvimento local
 
 ```bash
+nvm use
+npm ci
 npm run dev
 ```
 
-### 4. Build para produção
+Acesse [http://localhost:3000](http://localhost:3000). A raiz redireciona para `/pt`.
+
+## Validação
 
 ```bash
+npm run lint
+npm run typecheck
 npm run build
 ```
 
-## 📁 Estrutura do Projeto
+Ou execute todos os passos:
 
+```bash
+npm run check
 ```
+
+## Estrutura principal
+
+```text
 src/
 ├── app/
-│   ├── globals.css      # Design System e estilos globais
-│   ├── layout.tsx       # Layout principal com SEO
-│   ├── page.tsx         # Página principal
-│   ├── sitemap.ts       # Sitemap dinâmico
-│   └── robots.ts        # Robots.txt
+│   ├── [locale]/           # Página, layout e Open Graph localizados
+│   ├── api/cv/             # Geração do currículo em PDF
+│   ├── robots.ts
+│   └── sitemap.ts
 ├── components/
-│   ├── layout/
-│   │   ├── Header.tsx   # Header com navegação
-│   │   └── Footer.tsx   # Rodapé
-│   ├── sections/
-│   │   ├── Hero.tsx     # Seção Hero
-│   │   ├── Timeline.tsx # Timeline interativa
-│   │   ├── Projects.tsx # Grid de projetos
-│   │   ├── TechStack.tsx# Stack de tecnologias
-│   │   └── Contact.tsx  # Formulário de contato
-│   ├── providers/
-│   │   └── ThemeProvider.tsx
-│   └── ui/
-│       ├── Button.tsx   # Botão com efeito magnético
-│       └── ThemeToggle.tsx
+│   ├── layout/             # Header e Footer
+│   ├── providers/          # Tema e idioma
+│   ├── sections/           # Seções do portfólio
+│   └── ui/                 # Componentes reutilizáveis
 └── lib/
-    ├── data.ts          # ⚠️ SEUS DADOS AQUI
-    └── utils.ts         # Utilitários
+    ├── data.ts             # Conteúdo PT/EN/ES
+    ├── i18n.ts             # Configuração de idiomas
+    ├── profile.ts          # Contatos e links sociais compartilhados
+    └── site.ts             # URL canônica
 ```
 
-## 📝 Personalizações Necessárias
+## Atualização de conteúdo
 
-### 1. Dados Pessoais (`src/lib/data.ts`)
+O conteúdo das três línguas está em `src/lib/data.ts`. Cada idioma implementa o contrato `PortfolioContent`, o que ajuda o TypeScript a impedir seções ou rótulos ausentes.
 
-- `siteConfig`: Nome, título, headline, contatos
-- `socialLinks`: Links das redes sociais
-- `timelineData`: Sua trajetória profissional
-- `projectsData`: Seus projetos
-- `techStack`: Suas tecnologias
-- `setupItems`: Seu setup de trabalho
+Links sociais compartilhados ficam centralizados em `src/lib/profile.ts`; os contatos exibidos e usados no currículo permanecem localizados em `src/lib/data.ts`.
 
-### 2. Imagens
+## URL pública
 
-Adicione na pasta `public/`:
-- `avatar.jpg` - Sua foto
-- `og-image.png` - Imagem para compartilhamento (1200x630)
-- `cv.pdf` - Seu currículo
-- `projects/` - Imagens dos projetos
-
-### 3. Formulário de Contato
-
-Integre com EmailJS ou Resend em `src/components/sections/Contact.tsx`
-
-### 4. Domínio
-
-Atualize as URLs em:
-- `src/app/layout.tsx` (openGraph.url)
-- `src/app/sitemap.ts`
-- `src/app/robots.ts`
-
-## 🎨 Customização Visual
-
-### Cores (em `globals.css`)
-
-```css
-@theme inline {
-  --color-primary: #8b5cf6;    /* Roxo */
-  --color-secondary: #3b82f6;  /* Azul */
-  --color-accent: #22d3ee;     /* Ciano */
-}
-```
-
-### Fontes
-
-Altere em `src/app/layout.tsx` usando Google Fonts.
-
-## 📦 Deploy
-
-### Vercel (Recomendado)
+Por padrão, o projeto usa a URL atual da Vercel. Para outro domínio, configure:
 
 ```bash
-npm i -g vercel
-vercel
+NEXT_PUBLIC_SITE_URL=https://seu-dominio.com
 ```
 
-### Outras plataformas
+Essa variável alimenta canonical, sitemap, robots e dados estruturados.
 
-```bash
-npm run build
-npm run start
-```
+## Deploy
 
-## 📄 Licença
+O projeto está preparado para deploy na Vercel por integração com o repositório GitHub. Antes de publicar:
 
-MIT - Sinta-se livre para usar e modificar!
+1. Execute `npm run check`.
+2. Configure `NEXT_PUBLIC_SITE_URL` com o domínio final.
+3. Valide as três rotas e os três PDFs localizados.
+4. Revise links de demonstração e credenciais.
+
+## Privacidade
+
+O projeto não inclui analytics ou rastreamento por padrão. Qualquer ferramenta de métricas deve ser adicionada conscientemente, com documentação e política de privacidade compatíveis.

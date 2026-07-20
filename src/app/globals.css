@@ -6,6 +6,8 @@
 
 /* Dark Mode (Default) */
 :root {
+  color-scheme: dark;
+  --font-jetbrains-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   --background: #0a0a0b;
   --foreground: #fafafa;
   --muted: #71717a;
@@ -22,6 +24,7 @@
 
 /* Light Mode */
 html.light {
+  color-scheme: light;
   --background: #fafafa;
   --foreground: #0a0a0b;
   --muted: #71717a;
@@ -32,17 +35,24 @@ html.light {
   --primary: #7c3aed;
   --primary-foreground: #fafafa;
   --secondary: #2563eb;
-  --accent: #0891b2;
-  --success: #16a34a;
+  --accent: #0e7490;
+  --success: #15803d;
 }
 
 @theme inline {
-  /* Static Colors for Tailwind */
-  --color-primary: #8b5cf6;
-  --color-primary-foreground: #fafafa;
-  --color-secondary: #3b82f6;
-  --color-accent: #22d3ee;
-  --color-success: #22c55e;
+  /* Theme-aware colors for Tailwind utilities */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-success: var(--success);
   
   /* Fonts */
   --font-sans: var(--font-inter);
@@ -201,10 +211,49 @@ body {
   color: var(--foreground);
 }
 
-/* Focus Ring */
-.focus-ring:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px var(--background), 0 0 0 4px color-mix(in srgb, var(--color-primary) 50%, transparent);
+/* Keyboard focus */
+:where(
+  a[href],
+  button,
+  input,
+  textarea,
+  select,
+  summary,
+  [tabindex]:not([tabindex="-1"])
+):focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+
+.focus-ring:focus-visible {
+  outline-color: var(--primary);
+  box-shadow:
+    0 0 0 2px var(--background),
+    0 0 0 5px color-mix(in srgb, var(--primary) 65%, transparent);
+}
+
+/* Accessible skip navigation link */
+.skip-link {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  z-index: 200;
+  display: inline-flex;
+  transform: translate(-50%, -150%);
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--primary);
+  border-radius: 9999px;
+  background-color: var(--card);
+  color: var(--foreground);
+  padding: 0.75rem 1.25rem;
+  font-weight: 600;
+  box-shadow: 0 10px 30px color-mix(in srgb, var(--background) 55%, transparent);
+  transition: transform 0.2s ease;
+}
+
+.skip-link:focus-visible {
+  transform: translate(-50%, 0.75rem);
 }
 
 /* Bento Grid */
@@ -346,6 +395,10 @@ section:not(#hero) {
 
 /* Reduce motion for users who prefer it */
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
   .animate-orb-1,
   .animate-orb-2,
   .animate-orb-3,
@@ -359,5 +412,14 @@ section:not(#hero) {
   * {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
+  }
+
+  .will-change-transform,
+  .noise-bg::before {
+    will-change: auto !important;
+  }
+
+  .magnetic-btn {
+    transform: none !important;
   }
 }
