@@ -93,7 +93,7 @@ export function Certifications() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.4, delay: index * 0.1 }}
-              className="glass group rounded-2xl border border-border/40 p-6 transition-all hover:border-primary/40"
+              className="glass group rounded-2xl border border-border/40 p-6 transition-colors hover:border-primary/40"
             >
               <CertificationCardContent cert={cert} />
               {cert.certificateUrl && (
