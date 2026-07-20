@@ -165,7 +165,11 @@ export default async function LocaleLayout({
   const structuredData = buildPersonStructuredData(locale);
 
   return (
-    <html lang={htmlLocales[locale]} suppressHydrationWarning>
+    <html
+      lang={htmlLocales[locale]}
+      suppressHydrationWarning
+      data-scroll-behavior="smooth"
+    >
       <body
         className={`${inter.variable} antialiased noise-bg`}
       >

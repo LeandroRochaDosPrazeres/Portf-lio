@@ -860,6 +860,64 @@ export const portfolioContent: Record<Locale, PortfolioContent> = {
           size: "medium",
           inDevelopment: true,
           evidence: "Estudo acadêmico conceitual",
+          caseStudy: {
+            slug: "smart-grid-house",
+            summary:
+              "Um estudo acadêmico que modela como sensores, processamento em Python e visualizações podem transformar leituras de consumo em informações úteis para uma residência conectada.",
+            status: "Estudo acadêmico conceitual · em desenvolvimento",
+            problem:
+              "A conta mensal mostra o consumo acumulado, mas oferece pouco contexto sobre quando, onde e como a energia é utilizada. O estudo explora uma arquitetura capaz de organizar leituras residenciais e torná-las compreensíveis, sem afirmar que o sistema foi implantado em uma residência real.",
+            role:
+              "Concepção do estudo, modelagem do fluxo de dados, definição da arquitetura técnica e desenho da experiência de acompanhamento do consumo.",
+            responsibilities: [
+              "Delimitar o objetivo acadêmico, as hipóteses e os limites do sistema conceitual.",
+              "Modelar o caminho das leituras entre sensores, aquisição, processamento e visualização.",
+              "Estruturar em Python a transformação conceitual de dados brutos em indicadores de consumo.",
+              "Projetar painéis e alertas que priorizem compreensão e apoio à decisão do morador.",
+            ],
+            decisions: [
+              {
+                title: "Separar o fluxo em camadas",
+                description:
+                  "Aquisição, processamento, armazenamento e apresentação têm responsabilidades distintas, facilitando evolução e diagnóstico do sistema.",
+              },
+              {
+                title: "Preservar o contexto das leituras",
+                description:
+                  "Horário, origem e ambiente associado à medição acompanham o valor coletado para permitir comparações e evitar interpretações isoladas.",
+              },
+              {
+                title: "Explicar antes de automatizar",
+                description:
+                  "Indicadores, históricos e alertas orientam o morador antes de qualquer automação, mantendo decisões sensíveis sob controle humano.",
+              },
+              {
+                title: "Assumir falhas de sensores",
+                description:
+                  "Leituras ausentes, duplicadas ou fora de faixa são tratadas como cenários esperados no desenho, e não como dados automaticamente confiáveis.",
+              },
+            ],
+            architecture: [
+              "Sensores de consumo",
+              "Camada de aquisição IoT",
+              "Processamento em Python",
+              "Histórico de leituras",
+              "Painel e alertas",
+            ],
+            challenges: [
+              "Manter qualidade e continuidade das leituras diante de falhas de conexão, ruído ou sensores indisponíveis.",
+              "Transformar medições técnicas em comparações claras sem sugerir uma precisão que o protótipo ainda não validou.",
+              "Considerar privacidade, segurança dos dispositivos conectados e limites seguros para futuras automações.",
+            ],
+            validations: [
+              "O escopo diferencia explicitamente o estudo conceitual de uma solução implantada em ambiente real.",
+              "O fluxo ponta a ponta conecta sensores, aquisição, processamento, histórico e visualização.",
+              "Os cenários de falha e a necessidade de validação das leituras estão incorporados às decisões de arquitetura.",
+              "Tecnologias, limitações e próximos passos são apresentados sem reivindicar métricas de uso ou economia de energia.",
+            ],
+            outcome:
+              "O estudo consolidou uma arquitetura de referência para evoluir o conceito até um protótipo instrumentado e tornou explícitos os principais riscos de dados, segurança e automação. O resultado atual é acadêmico e não reivindica implantação, economia medida ou operação em produção.",
+          },
         },
         {
           id: "2",
@@ -1635,6 +1693,64 @@ export const portfolioContent: Record<Locale, PortfolioContent> = {
           size: "medium",
           inDevelopment: true,
           evidence: "Conceptual academic study",
+          caseStudy: {
+            slug: "smart-grid-house",
+            summary:
+              "An academic study modeling how sensors, Python processing, and visualizations can turn consumption readings into useful information for a connected home.",
+            status: "Conceptual academic study · in development",
+            problem:
+              "A monthly bill shows aggregate consumption but offers little context about when, where, and how energy is used. The study explores an architecture for organizing residential readings and making them understandable, without claiming that the system has been deployed in a real home.",
+            role:
+              "Study concept, data-flow modeling, technical architecture definition, and design of the consumption-monitoring experience.",
+            responsibilities: [
+              "Define the academic objective, hypotheses, and boundaries of the conceptual system.",
+              "Model the path of readings across sensors, acquisition, processing, and visualization.",
+              "Structure the conceptual Python transformation of raw data into consumption indicators.",
+              "Design dashboards and alerts that prioritize understanding and support resident decisions.",
+            ],
+            decisions: [
+              {
+                title: "Separate the flow into layers",
+                description:
+                  "Acquisition, processing, storage, and presentation have distinct responsibilities, making the system easier to evolve and diagnose.",
+              },
+              {
+                title: "Preserve reading context",
+                description:
+                  "Time, source, and the area associated with each measurement accompany the collected value, enabling comparison and avoiding isolated interpretation.",
+              },
+              {
+                title: "Explain before automating",
+                description:
+                  "Indicators, history, and alerts guide the resident before any automation, keeping sensitive decisions under human control.",
+              },
+              {
+                title: "Expect sensor failures",
+                description:
+                  "Missing, duplicate, or out-of-range readings are treated as expected design scenarios rather than automatically trusted data.",
+              },
+            ],
+            architecture: [
+              "Consumption sensors",
+              "IoT acquisition layer",
+              "Python processing",
+              "Reading history",
+              "Dashboard and alerts",
+            ],
+            challenges: [
+              "Maintain reading quality and continuity when connections fail, noise occurs, or sensors become unavailable.",
+              "Turn technical measurements into clear comparisons without implying precision the prototype has not yet validated.",
+              "Account for privacy, connected-device security, and safe boundaries for future automation.",
+            ],
+            validations: [
+              "The scope explicitly distinguishes the conceptual study from a solution deployed in a real environment.",
+              "The end-to-end flow connects sensors, acquisition, processing, history, and visualization.",
+              "Failure scenarios and the need to validate readings are incorporated into the architecture decisions.",
+              "Technologies, limitations, and next steps are presented without claiming usage or energy-saving metrics.",
+            ],
+            outcome:
+              "The study established a reference architecture for evolving the concept into an instrumented prototype and made its primary data, security, and automation risks explicit. The current result is academic and claims no deployment, measured savings, or production operation.",
+          },
         },
         {
           id: "2",
@@ -2410,6 +2526,64 @@ export const portfolioContent: Record<Locale, PortfolioContent> = {
           size: "medium",
           inDevelopment: true,
           evidence: "Estudio académico conceptual",
+          caseStudy: {
+            slug: "smart-grid-house",
+            summary:
+              "Un estudio académico que modela cómo sensores, procesamiento en Python y visualizaciones pueden transformar lecturas de consumo en información útil para una vivienda conectada.",
+            status: "Estudio académico conceptual · en desarrollo",
+            problem:
+              "La factura mensual muestra el consumo acumulado, pero ofrece poco contexto sobre cuándo, dónde y cómo se utiliza la energía. El estudio explora una arquitectura capaz de organizar lecturas residenciales y hacerlas comprensibles, sin afirmar que el sistema haya sido implantado en una vivienda real.",
+            role:
+              "Concepción del estudio, modelado del flujo de datos, definición de la arquitectura técnica y diseño de la experiencia de seguimiento del consumo.",
+            responsibilities: [
+              "Delimitar el objetivo académico, las hipótesis y los límites del sistema conceptual.",
+              "Modelar el recorrido de las lecturas entre sensores, adquisición, procesamiento y visualización.",
+              "Estructurar en Python la transformación conceptual de datos brutos en indicadores de consumo.",
+              "Diseñar paneles y alertas que prioricen la comprensión y apoyen las decisiones del residente.",
+            ],
+            decisions: [
+              {
+                title: "Separar el flujo en capas",
+                description:
+                  "Adquisición, procesamiento, almacenamiento y presentación tienen responsabilidades distintas, facilitando la evolución y el diagnóstico del sistema.",
+              },
+              {
+                title: "Preservar el contexto de las lecturas",
+                description:
+                  "La hora, el origen y el ambiente asociado a cada medición acompañan el valor recopilado para permitir comparaciones y evitar interpretaciones aisladas.",
+              },
+              {
+                title: "Explicar antes de automatizar",
+                description:
+                  "Indicadores, históricos y alertas orientan al residente antes de cualquier automatización, manteniendo las decisiones sensibles bajo control humano.",
+              },
+              {
+                title: "Prever fallas de sensores",
+                description:
+                  "Las lecturas ausentes, duplicadas o fuera de rango se tratan como escenarios esperados del diseño y no como datos automáticamente confiables.",
+              },
+            ],
+            architecture: [
+              "Sensores de consumo",
+              "Capa de adquisición IoT",
+              "Procesamiento en Python",
+              "Historial de lecturas",
+              "Panel y alertas",
+            ],
+            challenges: [
+              "Mantener la calidad y continuidad de las lecturas ante fallas de conexión, ruido o sensores no disponibles.",
+              "Transformar mediciones técnicas en comparaciones claras sin sugerir una precisión que el prototipo todavía no ha validado.",
+              "Considerar la privacidad, la seguridad de los dispositivos conectados y límites seguros para futuras automatizaciones.",
+            ],
+            validations: [
+              "El alcance diferencia explícitamente el estudio conceptual de una solución implantada en un entorno real.",
+              "El flujo de extremo a extremo conecta sensores, adquisición, procesamiento, historial y visualización.",
+              "Los escenarios de falla y la necesidad de validar las lecturas están incorporados en las decisiones de arquitectura.",
+              "Las tecnologías, limitaciones y próximos pasos se presentan sin reivindicar métricas de uso o ahorro energético.",
+            ],
+            outcome:
+              "El estudio consolidó una arquitectura de referencia para evolucionar el concepto hasta un prototipo instrumentado e hizo explícitos sus principales riesgos de datos, seguridad y automatización. El resultado actual es académico y no reivindica implantación, ahorro medido ni operación en producción.",
+          },
         },
         {
           id: "2",
