@@ -36,6 +36,7 @@ const projectGradients: Record<string, string> = {
   "1": "linear-gradient(135deg, #10b981, #14b8a6, #06b6d4)",
   "2": "linear-gradient(135deg, #8b5cf6, #a855f7, #d946ef)",
   "3": "linear-gradient(135deg, #f97316, #f59e0b, #eab308)",
+  "5": "linear-gradient(135deg, #06b6d4, #0ea5e9, #3b82f6)",
 };
 
 export default async function ProjectOpenGraphImage({

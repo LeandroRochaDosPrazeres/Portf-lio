@@ -9,6 +9,7 @@ import {
   ExternalLink,
   FileCheck2,
   Github,
+  House,
   Layers3,
   LockKeyhole,
   ShieldAlert,
@@ -24,6 +25,7 @@ import {
 import { isLocale, locales, type Locale } from "@/lib/i18n";
 import { absoluteUrl } from "@/lib/site";
 import { cn } from "@/lib/utils";
+import { CasePageScrollReset } from "./CasePageScrollReset";
 import { TrackedProjectExternalLink } from "./TrackedProjectExternalLink";
 
 interface ProjectCasePageProps {
@@ -54,6 +56,11 @@ const projectVisuals: Record<
     gradient: "from-orange-500 via-amber-500 to-yellow-500",
     ctaGradient: "from-orange-700 via-amber-700 to-orange-800",
     icon: Layers3,
+  },
+  "5": {
+    gradient: "from-cyan-500 via-sky-500 to-blue-500",
+    ctaGradient: "from-cyan-700 via-sky-700 to-blue-700",
+    icon: House,
   },
 };
 
@@ -145,6 +152,7 @@ export default async function ProjectCasePage({
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <CasePageScrollReset />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
